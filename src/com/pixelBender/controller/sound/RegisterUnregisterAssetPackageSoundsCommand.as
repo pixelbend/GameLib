@@ -31,6 +31,7 @@ package com.pixelBender.controller.sound
 				assetPackage:AssetPackageVO = assetProxy.getPackage(assetPackageName),
 				assetChildren:Vector.<AssetVO>,
 				assetVO:AssetVO;
+
 			// Check data integrity
 			if (assetPackage != null) 
 			{
