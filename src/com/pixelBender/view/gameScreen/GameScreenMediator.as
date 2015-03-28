@@ -126,6 +126,7 @@ package com.pixelBender.view.gameScreen
 
 		public final function disposeScreen():void
 		{
+			stopScreen();
 			state = GameConstants.STATE_DISPOSED;
 			gameFacade = null;
 			dispose();
