@@ -13,7 +13,6 @@ package com.pixelBender.model.component.sound
 	
 	public class PlaySoundComponent implements IPauseResume
 	{
-		
 		//==============================================================================================================
 		// MEMBERS
 		//==============================================================================================================
@@ -153,7 +152,7 @@ package com.pixelBender.model.component.sound
 			AssertHelpers.assertCondition((channelID < maxSoundChannels),
 											this + "Channel ID:[" + channelID + "] is not allocated!");
 			// If no player allocated, no sound is playing now is it?
-			if (!soundPlayers[channelID])
+			if (soundPlayers[channelID] == null)
 			{
 				return false;
 			}

@@ -144,7 +144,7 @@ package com.pixelBender.model.component.sound
 		 */
 		public function stop():void
 		{
-			if (getIsPlaying())
+			if (getIsPlaying() || getIsPaused())
 			{
 				stopChannel();
 				invokeCallback(true);
