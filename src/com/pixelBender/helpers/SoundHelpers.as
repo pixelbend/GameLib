@@ -267,7 +267,18 @@ package com.pixelBender.helpers
 			facade.sendNotification(GameConstants.REGISTER_UNREGISTER_ASSET_PACKAGE_SOUNDS, assetPackageName,
 												GameConstants.TYPE_UNREGISTER_ASSET_PACKAGE_SOUNDS);
 		}
-		
+
+		/**
+		 * Sets the master volume. All playing sounds will take the master volume into consideration to determine the
+		 * 	final volume of each sound channel
+		 * @param volume Number - between 0 and 1
+		 */
+		public static function setMasterVolume(volume:Number):void
+		{
+			volume = MathHelpers.clamp(volume, 0, 1);
+			facade.sendNotification(GameConstants.SET_SOUND_MASTER_VOLUME, volume);
+		}
+
 		//==============================================================================================================
 		// STATIC SOUND QUEUE API
 		//==============================================================================================================

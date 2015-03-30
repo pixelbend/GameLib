@@ -85,15 +85,16 @@ package com.pixelBender.model.component.sound
 		 * Starts to play the given sound on the specified channel
 		 * @param sound Sound
 		 * @param playProperties PlaySoundPropertiesVO
+		 * @param masterVolume Number
 		 */		
-		public function playSoundOnChannel(sound:Sound, playProperties:PlaySoundPropertiesVO):void
+		public function playSoundOnChannel(sound:Sound, playProperties:PlaySoundPropertiesVO, masterVolume:Number):void
 		{
 			// Check channel available
 			var channelID:int = playProperties.getChannelID();
 			AssertHelpers.assertCondition((channelID < maxSoundChannels),
 											this + "Channel ID:[" + channelID + "] is not allocated!");
 			// Play
-			tryPlaySound(sound, playProperties);
+			tryPlaySound(sound, playProperties, masterVolume);
 		}
 		
 		/**
@@ -159,6 +160,21 @@ package com.pixelBender.model.component.sound
 			return soundPlayers[channelID].getIsPlaying();
 		}
 
+		/**
+		 * Updates all playing sounds with the new volume
+		 * @param value
+		 */
+		public function setMasterVolume(value:Number):void
+		{
+			for (var i:int=0; i<soundPlayers.length; i++)
+			{
+				if (soundPlayers[i] != null)
+				{
+					soundPlayers[i].setMasterVolume(value);
+				}
+			}
+		}
+
 		//==============================================================================================================
 		// DEBUG
 		//==============================================================================================================
@@ -193,8 +209,10 @@ package com.pixelBender.model.component.sound
 		 * Will validate if the sound described by it's properties can be started on the given channel.
 		 * @param sound Sound - the new sound that should be started
 		 * @param playProperties PlaySoundPropertiesVO - the sound play properties
+		 * @param masterVolume Number - The master volume for all sounds. Will be taken into consideration when computing
+		 * 									each individual sound volume
 		 */
-		protected function tryPlaySound(sound:Sound, playProperties:PlaySoundPropertiesVO):void
+		protected function tryPlaySound(sound:Sound, playProperties:PlaySoundPropertiesVO, masterVolume:Number):void
 		{
 			// Internals
 			var channelID:int = playProperties.getChannelID(),
@@ -241,7 +259,7 @@ package com.pixelBender.model.component.sound
 			Logger.info(this + " Starting sound[" + playProperties.getSoundName() + "] on channel[" + channelID + "]");
 			soundPlayer = soundPlayerPool.allocate() as SoundPlayer;
 			soundPlayers[channelID] = soundPlayer;
-			soundPlayer.play(sound, playProperties, handleSoundComplete);	
+			soundPlayer.play(sound, playProperties, masterVolume, handleSoundComplete);
 		}
 		
 		/**

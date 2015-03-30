@@ -18,5 +18,6 @@ package com.pixelBender.interfaces
 		function stopAllSoundChannels():void;
 		function isSoundPlaying(channelID:int):Boolean;
 		function getChannelPlayer(channelID:int):SoundPlayer;
+		function setMasterVolume(value:Number):void;
 	}
 }

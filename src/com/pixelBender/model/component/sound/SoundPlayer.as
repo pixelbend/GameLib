@@ -46,6 +46,11 @@ package com.pixelBender.model.component.sound
 		 * Reference to the current playing properties VO
 		 */
 		protected var currentPlayProperties												:PlaySoundPropertiesVO;
+
+		/**
+		 * Reference to the master volume
+		 */
+		protected var masterVolume														:Number;
 		
 		/**
 		 * Callback invoked when the sound is complete or stopped. 
@@ -125,9 +130,10 @@ package com.pixelBender.model.component.sound
 		 * Start playing the given sound.
 		 * @param sound Sound - the sound to play
 		 * @param properties PlaySoundPropertiesVO - reference to the playing properties. Used in playing the sound
+		 * @param masterVolume Number - the master volume for all sounds
 		 * @param completeCallback Function - invoked when the sound is complete/stopped
 		 */
-		public function play(sound:Sound, properties:PlaySoundPropertiesVO, completeCallback:Function):void
+		public function play(sound:Sound, properties:PlaySoundPropertiesVO, masterVolume:Number, completeCallback:Function):void
 		{
 			// Check state integrity
 			AssertHelpers.assertCondition(!getIsPlaying(), "Already playing! Call stop first!");
@@ -135,6 +141,7 @@ package com.pixelBender.model.component.sound
 			this.sound = sound;
 			this.completeCallback = completeCallback;
 			this.currentPlayProperties.initializeFromVO(properties);
+			this.masterVolume = masterVolume;
 			// Start
 			startChannel();
 		}
@@ -146,11 +153,13 @@ package com.pixelBender.model.component.sound
 		{
 			if (getIsPlaying() || getIsPaused())
 			{
-				stopChannel();
-				invokeCallback(true);
+				handleSoundComplete(null);
 			}
 		}
 
+		/**
+		 * Clear the sound player of all the members, making it ready for object pool release
+		 */
 		public function clear():void
 		{
 			state = GameConstants.STATE_IDLE;
@@ -183,22 +192,18 @@ package com.pixelBender.model.component.sound
 		{
 			if (currentPlayProperties != null)
 			{
-				return currentPlayProperties.getVolume();
+				return masterVolume * currentPlayProperties.getVolume();
 			}
 			return 0;
 		}
 		
-		public function setVolume(value:int):void
+		public function setMasterVolume(value:Number):void
 		{
-			if (currentPlayProperties != null) 
+			masterVolume = value;
+			// Adjust sound channel also
+			if (getIsPlaying())
 			{
-				// Set play properties volume
-				currentPlayProperties.setVolume(value);
-				// Adjust sound channel also
-				if ( getIsPlaying() )
-				{
-					channel.soundTransform = new SoundTransform(value/100, channel.soundTransform.pan);
-				}
+				channel.soundTransform = new SoundTransform((masterVolume * currentPlayProperties.getVolume())/100, channel.soundTransform.pan);
 			}
 		}
 		
@@ -284,7 +289,7 @@ package com.pixelBender.model.component.sound
 		protected function startChannel(position:Number = 0):void
 		{
 			// Internals
-			var volume:int = MathHelpers.clamp(currentPlayProperties.getVolume()/100, 0, 1),
+			var volume:int = MathHelpers.clamp((masterVolume * currentPlayProperties.getVolume())/100, 0, 1),
 				loops:int = currentPlayProperties.getLoops();
 			// Set state
 			state = BitMaskHelpers.addBit(state, GameConstants.STATE_PLAYING);

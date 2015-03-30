@@ -1,6 +1,7 @@
 package com.pixelBender.model
 {
 	import com.pixelBender.constants.GameConstants;
+	import com.pixelBender.helpers.MathHelpers;
 	import com.pixelBender.model.vo.sound.PlaySoundPropertiesVO;
 	import com.pixelBender.helpers.AssertHelpers;
 	import com.pixelBender.helpers.DictionaryHelpers;
@@ -34,6 +35,11 @@ package com.pixelBender.model
 		protected var maxSoundChannels														:int;
 
 		/**
+		 * Master volume for all sounds. Between 0 and 1
+		 */
+		protected var masterVolume															:Number;
+
+		/**
 		 * Internal state flag
 		 */
 		protected var state																	:int;
@@ -48,6 +54,7 @@ package com.pixelBender.model
 			maxSoundChannels = GameConstants.MAX_CHANNELS;
 			playingComponent = new PlaySoundComponent(maxSoundChannels);
 			librarySounds = new Dictionary();
+			masterVolume = 1;
 			state = GameConstants.STATE_IDLE;
 		}
 		
@@ -119,7 +126,7 @@ package com.pixelBender.model
 				}
 				else
 				{
-					playingComponent.playSoundOnChannel(librarySounds[soundName], playSoundProperties);
+					playingComponent.playSoundOnChannel(librarySounds[soundName], playSoundProperties, masterVolume);
 				}
 			}
 		}
@@ -202,7 +209,18 @@ package com.pixelBender.model
 		{
 			return playingComponent.getChannelPlayer(channelID);
 		}
-		
+
+		/**
+		 * Changes the master volume
+		 * @param value Number
+		 */
+		public function setMasterVolume(value:Number):void
+		{
+			masterVolume = MathHelpers.clamp(value, 0, 1);
+			playingComponent.setMasterVolume(masterVolume);
+			facade.sendNotification(GameConstants.SOUND_MASTER_VOLUME_CHANGED, masterVolume);
+		}
+
 		//==============================================================================================================
 		// IPauseResume IMPLEMENTATION
 		//==============================================================================================================

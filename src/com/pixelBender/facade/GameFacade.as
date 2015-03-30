@@ -33,6 +33,7 @@ package com.pixelBender.facade
 	import com.pixelBender.controller.sound.PauseResumeSoundOnChannelCommand;
 	import com.pixelBender.controller.sound.PlaySoundOnChannelCommand;
 	import com.pixelBender.controller.sound.RegisterUnregisterAssetPackageSoundsCommand;
+	import com.pixelBender.controller.sound.SetSoundMasterVolumeCommand;
 	import com.pixelBender.controller.sound.StopSoundOnChannelCommand;
 	import com.pixelBender.controller.sound.StopSoundsOnAllChannelsCommand;
 	import com.pixelBender.controller.tween.AddTweenCommand;
@@ -331,11 +332,11 @@ package com.pixelBender.facade
 			registerCommand(GameConstants.REMOVE_FILE_REFERENCE_CONTENT, RemoveFileReferenceContentCommand);
 			// Sound proxy commands
 			registerCommand(GameConstants.PLAY_SOUND_ON_CHANNEL, PlaySoundOnChannelCommand);
+			registerCommand(GameConstants.SET_SOUND_MASTER_VOLUME, SetSoundMasterVolumeCommand);
 			registerCommand(GameConstants.PAUSE_RESUME_SOUND_ON_CHANNEL, PauseResumeSoundOnChannelCommand);
 			registerCommand(GameConstants.STOP_SOUND_ON_CHANNEL, StopSoundOnChannelCommand);
 			registerCommand(GameConstants.STOP_SOUNDS_ON_ALL_CHANNELS, StopSoundsOnAllChannelsCommand);
-			registerCommand(GameConstants.REGISTER_UNREGISTER_ASSET_PACKAGE_SOUNDS,
-								RegisterUnregisterAssetPackageSoundsCommand);
+			registerCommand(GameConstants.REGISTER_UNREGISTER_ASSET_PACKAGE_SOUNDS, RegisterUnregisterAssetPackageSoundsCommand);
 			// Game screen commands
 			registerCommand(GameConstants.LOAD_GAME_SCREEN, LoadGameScreenCommand);
 			registerCommand(GameConstants.SHOW_GAME_SCREEN, ShowGameScreenCommand);
