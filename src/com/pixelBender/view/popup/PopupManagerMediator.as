@@ -11,16 +11,20 @@ package com.pixelBender.view.popup
 	import com.pixelBender.model.vo.popup.PopupTranslucentLayerVO;
 	import com.pixelBender.model.vo.note.popup.ShowPopupNotificationVO;
 	import com.pixelBender.view.popup.vo.PopupHelpersResponseVO;
+
+	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Graphics;
 	import flash.display.Sprite;
 	import flash.display.Sprite;
 	import flash.geom.ColorTransform;
+	import flash.geom.Rectangle;
 
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	import starling.display.DisplayObjectContainer;
+	import starling.display.Image;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.display.Sprite;
@@ -59,12 +63,12 @@ package com.pixelBender.view.popup
 		/**
 		 * The translucent layer view component sprite
 		 */		
-		protected var translucentLayerView									:flash.display.Sprite;
+		protected var translucentLayerView									:Bitmap;
 
 		/**
 		 * The starling translucent layer view component sprite
 		 */
-		protected var starlingTranslucentLayerView							:starling.display.Sprite;
+		protected var starlingTranslucentLayerView							:Image;
 		
 		//==============================================================================================================
 		// CONSTRUCTOR
@@ -371,20 +375,20 @@ package com.pixelBender.view.popup
 		 */
 		protected function createInitialTranslucentLayer():void
 		{
-			var graphics:Graphics,
-				gameSize:GameSizeVO = GameFacade(facade).getApplicationSize(),
+			var gameSize:GameSizeVO = GameFacade(facade).getApplicationSize(),
+				bitmapData:BitmapData = new BitmapData(100, 100, false, 0xFFFFFF),
 				width:int = gameSize.getWidth(),
 				height:int = gameSize.getHeight(),
-				bitmapData:BitmapData = new BitmapData(width, height, false, 0xFFFFFF);
+				scaleX:Number = width/bitmapData.width,
+				scaleY:Number = height/bitmapData.height;
 			// Draw normal graphics
-			translucentLayerView = new flash.display.Sprite();
-			graphics = translucentLayerView.graphics;
-			graphics.clear();
-			graphics.beginFill(0xFFFFFF, 1);
-			graphics.drawRect(0, 0, width, height);
-			graphics.endFill();
+			translucentLayerView = new Bitmap(bitmapData);
+			translucentLayerView.scaleX = scaleX;
+			translucentLayerView.scaleY = scaleY;
 			// Draw starling graphics
-			starlingTranslucentLayerView = StarlingHelpers.createTextureSprite(bitmapData, bitmapData.width, bitmapData.height, true);
+			starlingTranslucentLayerView = Image.fromBitmap(new Bitmap(bitmapData), false);
+			starlingTranslucentLayerView.scaleX = scaleX;
+			starlingTranslucentLayerView.scaleY = scaleY;
 			// Update
 			updateTranslucentLayerColor();
 			updateTranslucentLayerAlpha();
@@ -395,22 +399,9 @@ package com.pixelBender.view.popup
 		 */		
 		protected function updateTranslucentLayerColor():void
 		{
-			var graphics:Graphics = translucentLayerView.graphics,
-				gameSize:GameSizeVO = GameFacade(facade).getApplicationSize(),
-				width:int = gameSize.getWidth(),
-				height:int = gameSize.getHeight();
-			// Update normal layer
-			graphics.clear();
-			graphics.beginFill(translucentLayerVO.getLayerColor(), 1);
-			graphics.drawRect(0, 0, width, height);
-			graphics.endFill();
-			// Update starling layer
-			for (var i:int=0; i<starlingTranslucentLayerView.numChildren; i++)
-			{
-				var image:Image = starlingTranslucentLayerView.getChildAt(i) as Image;
-				if (image == null) continue;
-				image.color = translucentLayerVO.getLayerColor();
-			}
+			translucentLayerView.bitmapData.fillRect(new Rectangle(0, 0, translucentLayerView.bitmapData.width,
+														translucentLayerView.bitmapData.height), translucentLayerVO.getLayerColor());
+			starlingTranslucentLayerView.color = translucentLayerVO.getLayerColor();
 		}
 
 		/**
