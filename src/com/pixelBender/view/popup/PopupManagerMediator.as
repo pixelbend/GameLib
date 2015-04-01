@@ -15,9 +15,14 @@ package com.pixelBender.view.popup
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Graphics;
 	import flash.display.Sprite;
+	import flash.display.Sprite;
+	import flash.geom.ColorTransform;
+
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	import starling.display.DisplayObjectContainer;
+	import starling.display.Image;
+	import starling.display.Sprite;
 	import starling.display.Sprite;
 
 	public class PopupManagerMediator extends Mediator implements IPauseResume
@@ -68,10 +73,9 @@ package com.pixelBender.view.popup
 		public function PopupManagerMediator(mediatorName:String)
 		{
 			super(mediatorName);
-			translucentLayerView = new flash.display.Sprite();
 			currentPopups = new Vector.<PopupMediator>();
 			translucentLayerVO = new PopupTranslucentLayerVO();
-			updateTranslucentLayerColor();
+			createInitialTranslucentLayer();
 		}
 		
 		//==============================================================================================================
@@ -361,29 +365,52 @@ package com.pixelBender.view.popup
 		//==============================================================================================================
 		// LOCALS
 		//==============================================================================================================
-		
+
+		/**
+		 * Creates the initial translucent layers
+		 */
+		protected function createInitialTranslucentLayer():void
+		{
+			var graphics:Graphics,
+				gameSize:GameSizeVO = GameFacade(facade).getApplicationSize(),
+				width:int = gameSize.getWidth(),
+				height:int = gameSize.getHeight(),
+				bitmapData:BitmapData = new BitmapData(width, height, false, 0xFFFFFF);
+			// Draw normal graphics
+			translucentLayerView = new flash.display.Sprite();
+			graphics = translucentLayerView.graphics;
+			graphics.clear();
+			graphics.beginFill(0xFFFFFF, 1);
+			graphics.drawRect(0, 0, width, height);
+			graphics.endFill();
+			// Draw starling graphics
+			starlingTranslucentLayerView = StarlingHelpers.createTextureSprite(bitmapData, bitmapData.width, bitmapData.height, true);
+			// Update
+			updateTranslucentLayerColor();
+			updateTranslucentLayerAlpha();
+		}
+
 		/**
 		 * Will redraw the translucent layer according to the new color.
 		 */		
 		protected function updateTranslucentLayerColor():void
 		{
-			// Internals
 			var graphics:Graphics = translucentLayerView.graphics,
 				gameSize:GameSizeVO = GameFacade(facade).getApplicationSize(),
 				width:int = gameSize.getWidth(),
-				height:int = gameSize.getHeight(),
-				color:int = translucentLayerVO.getLayerColor(),
-				bitmapData:BitmapData = new BitmapData(width, height, false, color);
-			// Redraw normal graphics
+				height:int = gameSize.getHeight();
+			// Update normal layer
 			graphics.clear();
-			graphics.beginFill(color, 1);
+			graphics.beginFill(translucentLayerVO.getLayerColor(), 1);
 			graphics.drawRect(0, 0, width, height);
 			graphics.endFill();
-			// Redraw starling translucent layer
-			StarlingHelpers.disposeContainer(starlingTranslucentLayerView, true);
-			starlingTranslucentLayerView = StarlingHelpers.createTextureSprite(bitmapData, bitmapData.width, bitmapData.height, true);
-			// Update alpha
-			updateTranslucentLayerAlpha();
+			// Update starling layer
+			for (var i:int=0; i<starlingTranslucentLayerView.numChildren; i++)
+			{
+				var image:Image = starlingTranslucentLayerView.getChildAt(i) as Image;
+				if (image == null) continue;
+				image.color = translucentLayerVO.getLayerColor();
+			}
 		}
 
 		/**
