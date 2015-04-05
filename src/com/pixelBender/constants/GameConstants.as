@@ -47,6 +47,7 @@ package com.pixelBender.constants
 		public static const RETRIEVE_CURRENT_PLAYING_SOUND						:String = "_game__retrieveCurrentPlayingSound";
 		public static const PAUSE_RESUME_SOUND_ON_CHANNEL						:String = "_game__pauseResumeSoundOnChannel";
 		public static const REGISTER_UNREGISTER_ASSET_PACKAGE_SOUNDS			:String = "_game__registerUnregisterAssetPackageSounds";
+		public static const RETRIEVE_SOUND_MASTER_VOLUME						:String = "_game__retrieveSoundMasterVolume";
 		public static const SET_SOUND_MASTER_VOLUME								:String = "_game__setSoundMasterVolume";
 		public static const SOUND_MASTER_VOLUME_CHANGED							:String = "_game__soundMasterVolumeChanged";
 		

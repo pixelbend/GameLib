@@ -211,6 +211,15 @@ package com.pixelBender.model
 		}
 
 		/**
+		 * Getter for the masterVolume member
+		 * @return Number
+		 */
+		public function getMasterVolume():Number
+		{
+			return masterVolume;
+		}
+
+		/**
 		 * Changes the master volume
 		 * @param value Number
 		 */

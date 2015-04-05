@@ -6,6 +6,7 @@ package com.pixelBender.helpers
 	import com.pixelBender.model.vo.sound.PlayQueuePropertiesVO;
 	import com.pixelBender.model.vo.sound.PlaySoundPropertiesVO;
 	import com.pixelBender.model.vo.sound.RetrieveCurrentPlayingSoundVO;
+	import com.pixelBender.model.vo.sound.RetrieveMasterVolumeVO;
 	import com.pixelBender.pool.ObjectPool;
 
 	public class SoundHelpers extends GameHelpers
@@ -21,6 +22,7 @@ package com.pixelBender.helpers
 		{
 			objectPoolMap[PlaySoundPropertiesVO.NAME] = objectPoolManager.retrievePool(PlaySoundPropertiesVO.NAME);
 			objectPoolMap[RetrieveCurrentPlayingSoundVO.NAME] = objectPoolManager.retrievePool(RetrieveCurrentPlayingSoundVO.NAME);
+			objectPoolMap[RetrieveMasterVolumeVO.NAME] = objectPoolManager.retrievePool(RetrieveMasterVolumeVO.NAME);
 		}
 
 		//==============================================================================================================
@@ -266,6 +268,19 @@ package com.pixelBender.helpers
 		{
 			facade.sendNotification(GameConstants.REGISTER_UNREGISTER_ASSET_PACKAGE_SOUNDS, assetPackageName,
 												GameConstants.TYPE_UNREGISTER_ASSET_PACKAGE_SOUNDS);
+		}
+
+		/**
+		 * Retrieves the master volume. All playing sounds will take the master volume into consideration to determine the
+		 * 	final volume of each sound channel
+		 */
+		public static function getMasterVolume():Number
+		{
+			var pool:ObjectPool = objectPoolMap[RetrieveMasterVolumeVO.NAME],
+				noteVO:RetrieveMasterVolumeVO = pool.allocate() as RetrieveMasterVolumeVO;
+			facade.sendNotification(GameConstants.RETRIEVE_SOUND_MASTER_VOLUME, noteVO);
+			pool.release(noteVO);
+			return noteVO.getMasterVolume();
 		}
 
 		/**

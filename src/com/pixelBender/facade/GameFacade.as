@@ -33,6 +33,8 @@ package com.pixelBender.facade
 	import com.pixelBender.controller.sound.PauseResumeSoundOnChannelCommand;
 	import com.pixelBender.controller.sound.PlaySoundOnChannelCommand;
 	import com.pixelBender.controller.sound.RegisterUnregisterAssetPackageSoundsCommand;
+	import com.pixelBender.controller.sound.RetrieveCurrentPlayingSoundCommand;
+	import com.pixelBender.controller.sound.RetrieveSoundMasterVolumeCommand;
 	import com.pixelBender.controller.sound.SetSoundMasterVolumeCommand;
 	import com.pixelBender.controller.sound.StopSoundOnChannelCommand;
 	import com.pixelBender.controller.sound.StopSoundsOnAllChannelsCommand;
@@ -60,6 +62,7 @@ package com.pixelBender.facade
 	import com.pixelBender.model.vo.sound.PlayQueuePropertiesVO;
 	import com.pixelBender.model.vo.sound.PlaySoundPropertiesVO;
 	import com.pixelBender.model.vo.sound.RetrieveCurrentPlayingSoundVO;
+	import com.pixelBender.model.vo.sound.RetrieveMasterVolumeVO;
 	import com.pixelBender.model.vo.tween.TweenTargetPropertyVO;
 	import com.pixelBender.model.vo.tween.TweenVO;
 	import com.pixelBender.pool.ObjectPool;
@@ -332,6 +335,8 @@ package com.pixelBender.facade
 			registerCommand(GameConstants.REMOVE_FILE_REFERENCE_CONTENT, RemoveFileReferenceContentCommand);
 			// Sound proxy commands
 			registerCommand(GameConstants.PLAY_SOUND_ON_CHANNEL, PlaySoundOnChannelCommand);
+			registerCommand(GameConstants.RETRIEVE_CURRENT_PLAYING_SOUND, RetrieveCurrentPlayingSoundCommand);
+			registerCommand(GameConstants.RETRIEVE_SOUND_MASTER_VOLUME, RetrieveSoundMasterVolumeCommand);
 			registerCommand(GameConstants.SET_SOUND_MASTER_VOLUME, SetSoundMasterVolumeCommand);
 			registerCommand(GameConstants.PAUSE_RESUME_SOUND_ON_CHANNEL, PauseResumeSoundOnChannelCommand);
 			registerCommand(GameConstants.STOP_SOUND_ON_CHANNEL, StopSoundOnChannelCommand);
@@ -389,6 +394,7 @@ package com.pixelBender.facade
 			poolManager.registerPool(CompleteSoundPropertiesVO.NAME, CompleteSoundPropertiesVO, 1);
 			poolManager.registerPool(CompleteQueuePropertiesVO.NAME, CompleteQueuePropertiesVO, 1);
 			poolManager.registerPool(RetrieveCurrentPlayingSoundVO.NAME, RetrieveCurrentPlayingSoundVO, 1);
+			poolManager.registerPool(RetrieveMasterVolumeVO.NAME, RetrieveMasterVolumeVO, 1);
 			// Popup VOs
 			poolManager.registerPool(PopupHelpersResponseVO.NAME, PopupHelpersResponseVO, 1);
 			// File loaders

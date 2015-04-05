@@ -87,7 +87,7 @@ package com.pixelBender.model.component.sound
 			}
 			// Set state
 			state = BitMaskHelpers.addBit(state, GameConstants.STATE_PAUSED);
-			// Flash sometimes reports an invalid position value (sometimes greater than the actual sound.length() aka idiot!)
+			// Flash sometimes reports an invalid position value
 			pauseTime = MathHelpers.clamp(this.getPosition(), 0, this.getLength() - 100);
 			// Kill the channel. Will be restored on resume
 			stopChannel();		
@@ -203,7 +203,7 @@ package com.pixelBender.model.component.sound
 			// Adjust sound channel also
 			if (getIsPlaying())
 			{
-				channel.soundTransform = new SoundTransform((masterVolume * currentPlayProperties.getVolume())/100, channel.soundTransform.pan);
+				channel.soundTransform = new SoundTransform(masterVolume * currentPlayProperties.getVolume() * 0.01, channel.soundTransform.pan);
 			}
 		}
 		
@@ -289,7 +289,8 @@ package com.pixelBender.model.component.sound
 		protected function startChannel(position:Number = 0):void
 		{
 			// Internals
-			var volume:int = MathHelpers.clamp((masterVolume * currentPlayProperties.getVolume())/100, 0, 1),
+			var aggregatedVolume:Number = masterVolume * currentPlayProperties.getVolume(),
+				volume:Number = MathHelpers.clamp(aggregatedVolume * 0.01, 0, 1),
 				loops:int = currentPlayProperties.getLoops();
 			// Set state
 			state = BitMaskHelpers.addBit(state, GameConstants.STATE_PLAYING);
