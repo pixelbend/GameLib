@@ -102,6 +102,7 @@ package com.pixelBender.constants
 		//=================================================================================================================================
 
 		public static const CHANGE_APPLICATION_LOCALE							:String = "_game__changeApplicationLocale";
+		public static const APPLICATION_LOCALE_CHANGED							:String = "_game__applicationLocaleChanged";
 
 		//=================================================================================================================================
 		// TRANSITION / TRANSITION SEQUENCE NAMES

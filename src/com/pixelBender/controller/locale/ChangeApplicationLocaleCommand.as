@@ -25,6 +25,8 @@ package com.pixelBender.controller.locale
 			// Change application locale
 			assetProxy.setLocale(newLocale);
 			localizationProxy.setLocale(newLocale);
+			// Notify others
+			facade.sendNotification(GameConstants.APPLICATION_LOCALE_CHANGED);
 		}
 	}
 }

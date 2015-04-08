@@ -78,12 +78,12 @@ package com.pixelBender.helpers
 		}
 
 		/**
-		 * Changes the current application locale language.
+		 * Changes the application locale
 		 * @param newLocale String
 		 */
-		public static function setCurrentLocale(newLocale:String):void
+		public static function changeLocale(newLocale:String):void
 		{
-			localizationProxy.setLocale(newLocale);
+			facade.sendNotification(GameConstants.CHANGE_APPLICATION_LOCALE, newLocale);
 		}
 	}
 }
