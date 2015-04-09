@@ -5,6 +5,8 @@ package com.pixelBender.view.popup
 	import com.pixelBender.helpers.AssertHelpers;
 	import com.pixelBender.helpers.BitMaskHelpers;
 	import com.pixelBender.interfaces.IPopup;
+	import com.pixelBender.model.PopupProxy;
+
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	public class PopupMediator extends Mediator implements IPopup
@@ -15,9 +17,9 @@ package com.pixelBender.view.popup
 		//==============================================================================================================
 		
 		/**
-		 * The popup logic XML. If it contains more that just visual data, create a proxy for it. 
+		 * Popup proxy. Used to parse the configuration XML and for any other data related needs
 		 */		
-		protected var logicXML																	:XML;
+		protected var popupProxy																:PopupProxy;
 
 		/**
 		 * Reference to the game facade
@@ -49,8 +51,7 @@ package com.pixelBender.view.popup
 		 */
 		public final function setLogicXML(xml:XML):void
 		{
-			this.logicXML = xml;
-			parseLogicXML();
+			popupProxy.setLogicXML(xml);
 		}
 
 		public final function openPopup():void
@@ -89,10 +90,31 @@ package com.pixelBender.view.popup
 		public final function disposePopup():void
 		{
 			closePopup();
-			logicXML = null;
-			gameFacade = null;
 			dispose();
+			if (popupProxy != null)
+			{
+				gameFacade.removeProxy(popupProxy.getProxyName());
+				popupProxy.dispose();
+				popupProxy = null;
+			}
+			gameFacade = null;
 			state = GameConstants.STATE_DISPOSED;
+		}
+
+		//==============================================================================================================
+		// IMediator OVERRIDES
+		//==============================================================================================================
+
+		public override function onRegister():void
+		{
+			gameFacade = facade as GameFacade;
+			popupProxy = createPopupProxy();
+			gameFacade.registerProxy(popupProxy);
+		}
+
+		public override function onRemove():void
+		{
+			gameFacade.removeProxy(popupProxy.getProxyName());
 		}
 
 		//==============================================================================================================
@@ -146,16 +168,6 @@ package com.pixelBender.view.popup
 		public function dispose():void
 		{
 			AssertHelpers.assertCondition(false, "Override this!");
-
-		}
-
-		//==============================================================================================================
-		// IMediator OVERRIDES
-		//==============================================================================================================
-
-		public override function onRegister():void
-		{
-			gameFacade = facade as GameFacade;
 		}
 
 		//==============================================================================================================
@@ -172,8 +184,11 @@ package com.pixelBender.view.popup
 		//==============================================================================================================
 
 		/**
-		 * Override this in order to process popup logic. 
+		 * Must be overridden. Provide a concrete implementation for the popup proxy.
 		 */		
-		protected function parseLogicXML():void {}
+		protected function createPopupProxy():PopupProxy
+		{
+			throw new Error("Override this and create a PopupProxy extended class");
+		}
 	}
 }
