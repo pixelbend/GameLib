@@ -212,11 +212,11 @@ package com.pixelBender.facade
 		/**
 		 * Needed to be called each time the game root is resized
 		 */
-		public function handleGameResized(scale:Number):void
+		public function handleGameResized(width:int, height:int, scale:Number):void
 		{
 			if (gameSize != null)
 			{
-				gameSize.update(gameRoot.stage.fullScreenWidth, gameRoot.stage.fullScreenHeight, scale);
+				gameSize.update(width, height, scale);
 			}
 		}
 

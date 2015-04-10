@@ -13,7 +13,7 @@ package com.pixelBender.controller.locale
 		//==============================================================================================================
 
 		/**
-		 * Changes the application locale language
+		 * Changes the application locale
 		 * @param notification INotification
 		 */
 		override public function execute(notification:INotification):void
