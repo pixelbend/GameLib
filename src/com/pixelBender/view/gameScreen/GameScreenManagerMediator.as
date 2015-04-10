@@ -12,6 +12,7 @@ package com.pixelBender.view.gameScreen
 	import com.pixelBender.view.transition.TransitionView;
 	
 	import flash.display.DisplayObjectContainer;
+	import flash.system.System;
 	import flash.utils.setTimeout;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -371,6 +372,7 @@ package com.pixelBender.view.gameScreen
 			{
 				oldGameScreen.stopScreen();
 				oldGameScreen = null;
+				System.gc();
 			}
 			newGameScreen.loadScreen();
 		}

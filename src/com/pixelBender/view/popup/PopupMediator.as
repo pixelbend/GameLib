@@ -109,6 +109,7 @@ package com.pixelBender.view.popup
 		{
 			gameFacade = facade as GameFacade;
 			popupProxy = createPopupProxy();
+			AssertHelpers.assertCondition((popupProxy!=null), "Popup proxy cannot be null!");
 			gameFacade.registerProxy(popupProxy);
 		}
 

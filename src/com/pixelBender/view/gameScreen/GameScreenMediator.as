@@ -7,6 +7,7 @@ package com.pixelBender.view.gameScreen
 	import com.pixelBender.interfaces.IGameScreen;
 	import com.pixelBender.log.Logger;
 	import com.pixelBender.model.GameScreenProxy;
+	import com.pixelBender.model.GameScreenProxy;
 	import flash.display.DisplayObjectContainer;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	import starling.display.DisplayObjectContainer;
@@ -187,7 +188,9 @@ package com.pixelBender.view.gameScreen
 		 */		
 		override public function onRemove():void
 		{
-			facade.removeProxy(mediatorName + GameConstants.GAME_SCREEN_PROXY_SUFFIX);
+			var screenProxy:GameScreenProxy = facade.retrieveProxy(getGameScreenProxyName()) as GameScreenProxy;
+			facade.removeProxy(screenProxy.getProxyName());
+			screenProxy.dispose();
 		}
 		
 		//==============================================================================================================
