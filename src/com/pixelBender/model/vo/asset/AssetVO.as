@@ -12,7 +12,7 @@ package com.pixelBender.model.vo.asset
 		//==============================================================================================================
 		
 		/**
-		 * Asset parent. The assetPan 
+		 * Parent package container
 		 */		
 		protected var parentPackage											:AssetPackageVO;
 		

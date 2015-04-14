@@ -1,6 +1,7 @@
 package com.pixelBender.model.component.sound
 {
 	import com.pixelBender.constants.GameConstants;
+	import com.pixelBender.facade.GameFacade;
 	import com.pixelBender.helpers.AssertHelpers;
 	import com.pixelBender.helpers.BitMaskHelpers;
 	import com.pixelBender.helpers.MathHelpers;
@@ -297,6 +298,7 @@ package com.pixelBender.model.component.sound
 			// Start channel
 			try
 			{
+				GameFacade.getInstance().sendNotification(GameConstants.SOUND_STARTED, currentPlayProperties);
 				channel = sound.play(position, loops, new SoundTransform(volume));
 				channel.addEventListener(Event.SOUND_COMPLETE, handleSoundComplete, false, 0, true);
 			}
@@ -342,6 +344,7 @@ package com.pixelBender.model.component.sound
 				completeCallback = null;
 				// Invoke
 				callbackReference(completeVO);
+				GameFacade.getInstance().sendNotification(GameConstants.SOUND_COMPLETED, completeVO);
 				// Release objects
 				pool.release(completeVO);
 			}

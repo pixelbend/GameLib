@@ -10,7 +10,7 @@ package com.pixelBender.model.component.sound
 	import com.pixelBender.pool.ObjectPool;
 	import com.pixelBender.pool.ObjectPoolManager;
 	import flash.media.Sound;
-	
+
 	public class PlaySoundComponent implements IPauseResume
 	{
 		//==============================================================================================================

@@ -19,7 +19,7 @@ package com.pixelBender.model.component.loader
 		// CONSTANTS
 		//==============================================================================================================
 		
-		private const DEFAULT_QUEUE_LENGTH														:int = 10;
+		private static const DEFAULT_QUEUE_LENGTH												:int = 10;
 		
 		//==============================================================================================================
 		// MEMBERS
@@ -95,8 +95,8 @@ package com.pixelBender.model.component.loader
 			// Internals
 			var asset:AssetVO;
 			// Reset all queues
-			currentLoaders = new Vector.<IAssetLoader>();
-			totalQueue = new Vector.<AssetVO>();
+			currentLoaders = new <IAssetLoader>[];
+			totalQueue = new <AssetVO>[];
 			this.assetLoadedCallback = assetLoadedCallback;
 			this.queueCompleteCallback = queueCompleteCallback;
 			// Clone queue
@@ -122,7 +122,7 @@ package com.pixelBender.model.component.loader
 		//==============================================================================================================
 		
 		/**
-		 * Will load next available asset 
+		 * Will load next available assets
 		 */		
 		protected function loadNextAssets():void
 		{

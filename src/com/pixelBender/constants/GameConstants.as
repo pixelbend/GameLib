@@ -50,6 +50,9 @@ package com.pixelBender.constants
 		public static const RETRIEVE_SOUND_MASTER_VOLUME						:String = "_game__retrieveSoundMasterVolume";
 		public static const SET_SOUND_MASTER_VOLUME								:String = "_game__setSoundMasterVolume";
 		public static const SOUND_MASTER_VOLUME_CHANGED							:String = "_game__soundMasterVolumeChanged";
+
+		public static const SOUND_STARTED										:String = "_game__soundStarted";
+		public static const SOUND_COMPLETED										:String = "_game__soundCompleted";
 		
 		//=================================================================================================================================
 		// SOUND NOTIFICATION TYPES

@@ -5,18 +5,24 @@ package com.pixelBender.model.vo
 	public class CallbackVO implements IDispose
 	{
 		//==============================================================================================================
+		// STATIC MEMBERS
+		//==============================================================================================================
+
+		private static const EMPTY_PARAMETER_LIST										:Array = [];
+
+		//==============================================================================================================
 		// MEMBERS
 		//==============================================================================================================
 		
 		/**
 		 * Callback that will be invoked 
 		 */		
-		private var callback																			:Function;
+		private var callback															:Function;
 		
 		/**
 		 * The callback parameters 
 		 */		
-		private var callbackParams																		:Array;
+		private var callbackParams														:Array;
 		
 		//==============================================================================================================
 		// CONSTRUCTOR
@@ -46,7 +52,7 @@ package com.pixelBender.model.vo
 		 */		
 		public function invoke():void
 		{
-			callback.apply(this, (callbackParams != null) ? callbackParams : []);
+			callback.apply(this, (callbackParams != null) ? callbackParams : EMPTY_PARAMETER_LIST);
 		}
 
 		//==============================================================================================================

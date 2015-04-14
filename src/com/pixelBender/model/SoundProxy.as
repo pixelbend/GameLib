@@ -183,8 +183,7 @@ package com.pixelBender.model
 		 */
 		public function stopAllSoundChannels():void
 		{
-			var i:int = 0;
-			for (;i<maxSoundChannels;i++)
+			for (var i:int = 0; i<maxSoundChannels; i++)
 			{
 				stopSoundOnChannel(i);
 			}
