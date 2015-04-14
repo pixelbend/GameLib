@@ -76,15 +76,6 @@ package com.pixelBender.facade
 	public class GameFacade extends Facade implements IRunnable
 	{
 		//==============================================================================================================
-		// STATIC MEMBERS
-		//==============================================================================================================
-		
-		/**
-		 * Static instance 
-		 */		
-		protected static var instance										:GameFacade;
-
-		//==============================================================================================================
 		// MEMBERS
 		//==============================================================================================================
 
@@ -140,9 +131,7 @@ package com.pixelBender.facade
 		//==============================================================================================================
 		
 		/**
-		 * 
 		 * It will create an instance if it wasn't already created. Otherwise will return the former created instance
-		 * 
 		 * @return the instance of the GameEngineFacade
 		 */
 		public static function getInstance():GameFacade
