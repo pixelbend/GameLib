@@ -93,9 +93,31 @@ package com.pixelBender.helpers
 		}
 		
 		public static function createTextureSpriteBackground(bitmapData:BitmapData, spriteWidth:int, spriteHeight:int,
-															 cutInPieces:Boolean=false, pieceSize:int=DEFAULT_PIECE_SIZE):Sprite
+															 cutInPieces:Boolean=true, pieceSize:int=DEFAULT_PIECE_SIZE):Sprite
 		{			
 			return createTextureSprite(bitmapData, spriteWidth, spriteHeight, cutInPieces, pieceSize);
+		}
+
+		public static function disposeTextureSprite(sprite:Sprite):void
+		{
+			if (sprite != null)
+			{
+				var imageTextures:Vector.<Texture> = new <Texture>[];
+				for (var i:int=0; i<sprite.numChildren; i++)
+				{
+					var image:Image = sprite.getChildAt(i) as Image;
+					if (image == null || image.texture == null) continue;
+					imageTextures.push(image.texture);
+				}
+				disposeContainer(sprite);
+				sprite = null;
+				for (i=0; i<imageTextures.length; i++)
+				{
+					imageTextures[i].dispose();
+					imageTextures[i] = null;
+				}
+				imageTextures = null;
+			}
 		}
 
 		private static function computeOptimalLayout(layout:Rectangle, maxSize:int):Vector.<Rectangle>
@@ -108,7 +130,6 @@ package com.pixelBender.helpers
 					columns:int = Math.ceil(layoutWidth/max);
 			// Internals
 			var rectangles:Vector.<Rectangle> = new <Rectangle>[],
-				piece:Rectangle,
 				pieceOffsetX:int,
 				pieceOffsetY:int,
 				pieceWidth:int,

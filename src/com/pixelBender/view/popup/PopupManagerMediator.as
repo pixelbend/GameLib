@@ -249,7 +249,7 @@ package com.pixelBender.view.popup
 			}
 			else 
 			{
-				while (currentPopups.length>0)
+				while (currentPopups.length > 0)
 				{
 					currentPopups.pop().closePopup();
 				}
