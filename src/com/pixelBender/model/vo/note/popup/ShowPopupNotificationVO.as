@@ -17,16 +17,22 @@ package com.pixelBender.model.vo.note.popup
 		/**
 		 * Reference to the asset proxy. Most likely needed for graphics/sounds etc. 
 		 */		
-		private var assetProxy																:AssetProxy
+		private var assetProxy																:AssetProxy;
+
+		/**
+		 * The VO needed for the popup to configure itself
+		 */
+		private var popupVO																	:Object;
 		
 		//==============================================================================================================
 		// CONSTRUCTOR
 		//==============================================================================================================
 		
-		public function ShowPopupNotificationVO(popup:PopupMediator, assetProxy:AssetProxy)
+		public function ShowPopupNotificationVO(popup:PopupMediator, assetProxy:AssetProxy, popupVO:Object)
 		{
 			this.popup = popup;
 			this.assetProxy = assetProxy;
+			this.popupVO = popupVO;
 		}
 		
 		//==============================================================================================================
@@ -41,6 +47,11 @@ package com.pixelBender.model.vo.note.popup
 		public function getAssetProxy():AssetProxy
 		{
 			return assetProxy;
+		}
+
+		public function getPopupVO():Object
+		{
+			return popupVO;
 		}
 
 		//==============================================================================================================

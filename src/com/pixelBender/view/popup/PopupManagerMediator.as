@@ -258,7 +258,7 @@ package com.pixelBender.view.popup
 			if (popupToShow is NormalDisplayPopup)
 			{
 				var normalDisplayPopup:NormalDisplayPopup = popupToShow as NormalDisplayPopup;
-				normalDisplayPopup.preparePopupForOpen(popupContainer, vo.getAssetProxy());
+				normalDisplayPopup.preparePopupForOpen(popupContainer, vo.getAssetProxy(), vo.getPopupVO());
 				if (translucentLayerVO.getLayerEnabled())
 				{
 					popupContainer.addChildAt(translucentLayerView, 0);
@@ -268,7 +268,7 @@ package com.pixelBender.view.popup
 			else if (popupToShow is StarlingPopup)
 			{
 				var starlingPopup:StarlingPopup = popupToShow as StarlingPopup;
-				starlingPopup.preparePopupForOpen(starlingPopupContainer, vo.getAssetProxy());
+				starlingPopup.preparePopupForOpen(starlingPopupContainer, vo.getAssetProxy(), vo.getPopupVO());
 				if (translucentLayerVO.getLayerEnabled())
 				{
 					starlingPopupContainer.addChildAt(starlingTranslucentLayerView, 0);

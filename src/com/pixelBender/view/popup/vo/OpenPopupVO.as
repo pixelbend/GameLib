@@ -1,35 +1,49 @@
 package com.pixelBender.view.popup.vo
 {
-	public class PopupHelpersResponseVO
+	public class OpenPopupVO
 	{
 		//==============================================================================================================
 		// NAME
 		//==============================================================================================================
 
-		public static const NAME							:String = "PopupHelpersResponseVO";
+		public static const NAME							:String = "OpenPopupVO";
 
 		//==============================================================================================================
 		// MEMBERS
 		//==============================================================================================================
 
-		private var response								:Object;
+		/**
+		 * Popup identifier
+		 */
+		private var popupName								:String;
+
+		/**
+		 * Popup initialization object
+		 */
+		private var popupVO									:Object;
 
 		//==============================================================================================================
 		// INIT
 		//==============================================================================================================
 
-		public function initialize(response:Object):void
+		public function initialize(popupName:String, popupVO:Object):void
 		{
-			this.response = response;
+			this.popupName = popupName;
+			this.popupVO = popupVO;
 		}
 
 		//==============================================================================================================
 		// GETTERS
 		//==============================================================================================================
 
-		public function getResponse():Object
+		public function getPopupName():String
 		{
-			return response;
+			return popupName;
+		}
+
+		public function getPopupVO():Object
+		{
+			return popupVO;
 		}
 	}
 }

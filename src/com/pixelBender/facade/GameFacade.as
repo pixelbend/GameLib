@@ -68,6 +68,7 @@ package com.pixelBender.facade
 	import com.pixelBender.pool.ObjectPool;
 	import com.pixelBender.pool.ObjectPoolManager;
 	import com.pixelBender.update.FrameUpdateManager;
+	import com.pixelBender.view.popup.vo.OpenPopupVO;
 	import com.pixelBender.view.popup.vo.PopupHelpersResponseVO;
 	import flash.display.DisplayObjectContainer;
 	import org.puremvc.as3.patterns.facade.Facade;
@@ -386,6 +387,7 @@ package com.pixelBender.facade
 			poolManager.registerPool(RetrieveMasterVolumeVO.NAME, RetrieveMasterVolumeVO, 1);
 			// Popup VOs
 			poolManager.registerPool(PopupHelpersResponseVO.NAME, PopupHelpersResponseVO, 1);
+			poolManager.registerPool(OpenPopupVO.NAME, OpenPopupVO, 1);
 			// File loaders
 			poolManager.registerPool(FileLoader.NAME, FileLoader);
 			// Notifications
