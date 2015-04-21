@@ -320,6 +320,11 @@ package com.pixelBender.model
 		{
 			return globalPackageName;
 		}
+
+		public function setKnownLoaders(knownLoaderTypes:Dictionary):void
+		{
+			loaderComponent.createLoaderPools(knownLoaderTypes);
+		}
 		
 		public function toString():String
 		{

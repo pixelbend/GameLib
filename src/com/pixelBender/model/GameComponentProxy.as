@@ -57,6 +57,11 @@ package com.pixelBender.model
 		 */		
 		protected var popups																	:Dictionary;
 
+		/**
+		 * List with all asset VO qualified class names
+		 */
+		protected var knownAssetClasses															:Dictionary;
+
 		//==============================================================================================================
 		// CONSTRUCTOR
 		//==============================================================================================================
@@ -77,11 +82,11 @@ package com.pixelBender.model
 		public function setGameComponents(componentDictionary:Dictionary):void
 		{
 			var componentVO:Object;
-			this.allComponents = componentDictionary;
-			this.pauseResumeComponents = new Vector.<IPauseResume>();
+			allComponents = componentDictionary;
+			pauseResumeComponents = new Vector.<IPauseResume>();
 			for each (componentVO in allComponents) 
 			{
-				if ( componentVO is IPauseResume )
+				if (componentVO is IPauseResume)
 				{
 					pauseResumeComponents.push(componentVO);
 				}
@@ -104,6 +109,25 @@ package com.pixelBender.model
 		public function getGameScreens():Dictionary
 		{
 			return gameScreens;
+		}
+
+		/**
+		 * Retrieve a certain asset qualified class name
+		 * @param assetType String
+		 * @return String
+		 */
+		public function getAssetQualifiedClassName(assetType:String):String
+		{
+			return knownAssetClasses[assetType];
+		}
+
+		/**
+		 * Setter for the knownAssetClasses member
+		 * @param knownAssetClasses Dictionary
+		 */
+		public function setKnownAssetVOClasses(knownAssetClasses:Dictionary):void
+		{
+			this.knownAssetClasses = knownAssetClasses;
 		}
 		
 		/**
@@ -273,36 +297,21 @@ package com.pixelBender.model
 		 */		
 		public function dispose():void
 		{
-			if (allComponents != null) 
-			{
-				DictionaryHelpers.deleteValues(allComponents);
-				allComponents = null;
-			}
-			if (gameScreens != null) 
-			{
-				DictionaryHelpers.deleteValues(gameScreens);
-				gameScreens = null;
-			}
-			if (popups != null) 
-			{
-				DictionaryHelpers.deleteValues(popups);
-				popups = null;
-			}
-			if ( transitionSequences != null ) 
-			{
-				DictionaryHelpers.deleteValues(transitionSequences);
-				transitionSequences = null;
-			}
-			if ( transitions != null ) 
-			{
-				DictionaryHelpers.deleteValues(transitions);
-				transitions = null;
-			}
-			if ( transitionInitVOs != null ) 
-			{
-				DictionaryHelpers.deleteValues(transitionInitVOs);
-				transitionInitVOs = null;
-			}
+			DictionaryHelpers.deleteValues(allComponents);
+			DictionaryHelpers.deleteValues(gameScreens);
+			DictionaryHelpers.deleteValues(popups);
+			DictionaryHelpers.deleteValues(transitionSequences);
+			DictionaryHelpers.deleteValues(transitions);
+			DictionaryHelpers.deleteValues(transitionInitVOs);
+			DictionaryHelpers.deleteValues(knownAssetClasses);
+
+			allComponents = null;
+			gameScreens = null;
+			popups = null;
+			transitionSequences = null;
+			transitions = null;
+			transitionInitVOs = null;
+			knownAssetClasses = null;
 			pauseResumeComponents = null;
 		}
 

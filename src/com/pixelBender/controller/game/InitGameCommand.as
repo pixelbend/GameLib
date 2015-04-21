@@ -1,20 +1,17 @@
 package com.pixelBender.controller.game
 {
 	import com.pixelBender.constants.GameConstants;
-	import com.pixelBender.constants.GameReflections;
 	import com.pixelBender.controller.asset.vo.ParseAndRegisterAssetPackageCommandVO;
 	import com.pixelBender.controller.game.component.GameComponent;
 	import com.pixelBender.controller.game.vo.InitGameCommandVO;
-	import com.pixelBender.controller.gameScreen.vo.ShowGameScreenCommandVO;
 	import com.pixelBender.helpers.AssertHelpers;
+	import com.pixelBender.helpers.ScreenHelpers;
 	import com.pixelBender.log.Logger;
 	import com.pixelBender.model.AssetProxy;
 	import com.pixelBender.model.GameComponentProxy;
 	import com.pixelBender.model.LocalizationProxy;
 	import com.pixelBender.model.vo.InitTransitionVO;
 	import com.pixelBender.model.vo.ScreenTransitionSequenceVO;
-	import com.pixelBender.pool.ObjectPool;
-	import com.pixelBender.pool.ObjectPoolManager;
 	import com.pixelBender.view.gameScreen.GameScreenManagerMediator;
 	import com.pixelBender.view.gameScreen.GameScreenMediator;
 	import com.pixelBender.view.popup.PopupManagerMediator;
@@ -46,7 +43,8 @@ package com.pixelBender.controller.game
 	 *      - transition views
 	 * 		- transition sequences
 	 * 		- popups
-	 * This command was kept so bulky (~400 lines Jeez), just so that there will be a single point of entry (and possible failure) on game initialization.
+	 * This command was kept so bulky, just so that there will be a single point of entry (and possible failure) on game initialization.
+	 * Everything is cross checked here.
 	 */	
 	public class InitGameCommand extends SimpleCommand
 	{
@@ -63,6 +61,7 @@ package com.pixelBender.controller.game
 			// Internals
 			var time:int = getTimer(),
 				initVO:InitGameCommandVO = notification.getBody() as InitGameCommandVO,
+				components:Components = new Components(),
 				defaultGameLogicXML:XML = initVO.getDefaultLogicXML(),
 				specificGameLogic:XML = initVO.getGameLogicXML(),
 				specificAssets:XML = initVO.getGameAssetsXML(),
@@ -79,16 +78,15 @@ package com.pixelBender.controller.game
 				gameComponentName:String,
 				list:XMLList,
 				node:XML;
-			// Log
+
 			Logger.info(this + " executing!");
 			// Create component dictionary
-			GameComponent.setQualifiedClassNameDictionary( getGameComponentQualifiedNameDictionary() );
-			// Create reflection dictionary
-			populateGameReflectionDictionary(defaultGameLogicXML);
+			GameComponent.setQualifiedClassNameDictionary(getGameComponentQualifiedNameDictionary());
+			populateComponents(defaultGameLogicXML, components);
 			// Parse specific components
 			if (specificGameLogic != null )
 			{
-				list = specificGameLogic.components.component;
+				list = specificGameLogic.gameComponents.gameComponent;
 				for each (node in list)
 				{
 					gameComponent = new GameComponent(String(node.@name), String(node.@type), String(node.@className), gameRoot);
@@ -96,10 +94,10 @@ package com.pixelBender.controller.game
 				}
 			}
 			// Parse default components
-			list = defaultGameLogicXML.components.component;
+			list = defaultGameLogicXML.gameComponents.gameComponent;
 			for each (node in list)
 			{
-				gameComponent = new GameComponent(String(node.@name), String(node.@type), GameReflections.getGameComponentQualifiedClassName(String(node.@name)), gameRoot);
+				gameComponent = new GameComponent(String(node.@name), String(node.@type), components.getGameComponentQualifiedClassName(String(node.@name)), gameRoot);
 				gameComponentName = gameComponent.getName();
 				if (gameComponentsDictionary[gameComponentName] == null)
 				{
@@ -107,11 +105,12 @@ package com.pixelBender.controller.game
 					gameComponentsDictionary[gameComponentName] = gameComponent.create(facade);
 				}
 			}
-			// Set locale
+			AssetProxy(gameComponentsDictionary[GameConstants.ASSET_PROXY_NAME]).setKnownLoaders(components.getAllComponentsByType(GameConstants.COMPONENT_TYPE_LOADER));
 			assignGameLocale(gameComponentsDictionary, initVO.getLocale());
 			// Set component dictionary
 			gameComponentProxy = facade.retrieveProxy(GameConstants.GAME_COMPONENT_PROXY_NAME) as GameComponentProxy;
 			gameComponentProxy.setGameComponents(gameComponentsDictionary);
+			gameComponentProxy.setKnownAssetVOClasses(components.getAllComponentsByType(GameConstants.COMPONENT_TYPE_ASSET));
 			// Create and set component view containers
 			createGameViewComponents(gameComponentsDictionary, gameRoot, starlingGameRoot);
 			// Parse configurations
@@ -140,20 +139,16 @@ package com.pixelBender.controller.game
 			createPopups(specificGameLogic.popups.popup, popupsDictionary);
 			gameComponentProxy.setPopups(popupsDictionary);
 			// Register the global asset packages
-			if ( specificAssets != null )
+			if (specificAssets != null)
 			{
 				facade.sendNotification(GameConstants.PARSE_AND_REGISTER_ASSET_PACKAGE, new ParseAndRegisterAssetPackageCommandVO(specificAssets, null, true, true));
 			}
 			// Debug
-			Logger.debug(this + " command took:" + (getTimer()-time) + " ms.");
+			Logger.debug(this + " command took:" + (getTimer() - time) + " ms.");
 			// All done. Start the show if it was asked to do so
 			if (initVO.getFirstScreenName() != null)
 			{
-				var pool:ObjectPool = ObjectPoolManager.getInstance().retrievePool(ShowGameScreenCommandVO.NAME),
-						noteVO:ShowGameScreenCommandVO = pool.allocate() as ShowGameScreenCommandVO;
-				noteVO.initialize(initVO.getFirstScreenName(), initVO.getTransitionSequenceName());
-				facade.sendNotification(GameConstants.SHOW_GAME_SCREEN, noteVO);
-				pool.release(noteVO);
+				ScreenHelpers.showScreen(initVO.getFirstScreenName(), initVO.getTransitionSequenceName());
 			}
 		}
 		
@@ -189,18 +184,27 @@ package com.pixelBender.controller.game
 		}
 		
 		/**
-		 * Will populate the reflection type dictionary in the static GameReflections class. 
-		 * @param defaultGameLogicXML XML
+		 * Will populate the components dictionary in the static ComponentHelpers class.
+		 * @param gameLogicXML XML
+		 * @param components Components
 		 */		
-		private static function populateGameReflectionDictionary(defaultGameLogicXML:XML):void
+		private static function populateComponents(gameLogicXML:XML, components:Components):void
 		{
 			// Internals
-			var reflections:XMLList = defaultGameLogicXML.reflections.reflection,
-				reflection:XML;
+			var list:XMLList = gameLogicXML.components.component,
+				node:XML;
 			// Parse
-			for each (reflection in reflections)
+			for (var i:int=0; i<list.length(); i++)
 			{
-				GameReflections.addReflectionComponent(String(reflection.@type), String(reflection.@name), String(reflection.@className));
+				node = list[i];
+
+				var componentType:String = String(node.@type),
+					componentName:String = String(node.@name);
+
+				if (!components.getIsComponentRegistered(componentType, componentName))
+				{
+					components.addComponent(componentType, componentName, String(node.@className));
+				}
 			}
 		}
 		
@@ -246,7 +250,7 @@ package com.pixelBender.controller.game
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition(String(node.@className)) as Class,
 				gameScreen:GameScreenMediator = new cls(String(node.@name));
 			// Check inheritance
-			AssertHelpers.assertCondition(gameScreen!=null, "Class["+String(node.@className)+"] is not an extension of GameScreenMediator!");
+			AssertHelpers.assertCondition(gameScreen != null, "Class[" + String(node.@className) + "] is not an extension of GameScreenMediator!");
 			// Register game screen
 			facade.registerMediator(gameScreen);
 			addToDictionary[gameScreen.getMediatorName()] = gameScreen;
@@ -286,7 +290,7 @@ package com.pixelBender.controller.game
 				transitionName:String = String(node.@name),
 				transitionView:TransitionView = new classInstance(transitionName);
 			// Check inheritance
-			AssertHelpers.assertCondition(transitionView!=null, "Class["+String(node.@className)+"] is not an extension of TransitionView!");
+			AssertHelpers.assertCondition(transitionView != null, "Class["+String(node.@className)+"] is not an extension of TransitionView!");
 			// Add to dictionary
 			addToDictionary[transitionName] = transitionView;
 		}
@@ -432,13 +436,64 @@ package com.pixelBender.controller.game
 		
 		/**
 		 * Assign game locale to all needed components 
-		 * @param gameComponentDictionary String
+		 * @param gameComponentsDictionary String
 		 * @param locale String
 		 */		
-		public static function assignGameLocale(gameComponentDictionary:Dictionary, locale:String):void
+		public static function assignGameLocale(gameComponentsDictionary:Dictionary, locale:String):void
 		{
-			AssetProxy(gameComponentDictionary[GameConstants.ASSET_PROXY_NAME]).setLocale(locale);
-			LocalizationProxy(gameComponentDictionary[GameConstants.LOCALIZATION_PROXY_NAME]).setLocale(locale);
+			AssetProxy(gameComponentsDictionary[GameConstants.ASSET_PROXY_NAME]).setLocale(locale);
+			LocalizationProxy(gameComponentsDictionary[GameConstants.LOCALIZATION_PROXY_NAME]).setLocale(locale);
 		}
+	}
+}
+
+import com.pixelBender.constants.GameConstants;
+import flash.utils.Dictionary;
+
+internal class Components
+{
+	private var componentDictionary:Dictionary;
+
+	public function Components()
+	{
+		componentDictionary = new Dictionary();
+	}
+
+	public function addComponent(componentType:String, name:String, className:String):void
+	{
+		if (componentDictionary[componentType] == null)
+		{
+			componentDictionary[componentType] = new Dictionary();
+		}
+		componentDictionary[componentType][name] = className;
+	}
+
+	public function getIsComponentRegistered(componentType:String, name:String):Boolean
+	{
+		return componentDictionary[componentType] != null && componentDictionary[componentType][name] != null;
+	}
+
+	public function getComponentQualifiedClassName(componentType:String, name:String):String
+	{
+		if (componentDictionary[componentType] != null)
+		{
+			return componentDictionary[componentType][name];
+		}
+		return null;
+	}
+
+	public function getAllComponentsByType(componentType:String):Dictionary
+	{
+		return componentDictionary[componentType];
+	}
+
+	public function getGameComponentQualifiedClassName(name:String):String
+	{
+		return getComponentQualifiedClassName(GameConstants.COMPONENT_TYPE_GAME_COMPONENT, name);
+	}
+
+	public function getAssetQualifiedClassName(name:String):String
+	{
+		return getComponentQualifiedClassName(GameConstants.COMPONENT_TYPE_ASSET, name);
 	}
 }

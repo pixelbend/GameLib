@@ -158,7 +158,7 @@ package com.pixelBender.controller.game.component
 			var node:XML;
 			for each (node in extendList)
 			{
-				if ( String(node.@type) == classNameToCheck )
+				if (String(node.@type) == classNameToCheck)
 				{
 					return true;
 				}

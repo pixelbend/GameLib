@@ -1,10 +1,10 @@
 package com.pixelBender.controller.asset
 {
 	import com.pixelBender.constants.GameConstants;
-	import com.pixelBender.constants.GameReflections;
 	import com.pixelBender.controller.asset.vo.ParseAndRegisterAssetPackageCommandVO;
 	import com.pixelBender.helpers.AssertHelpers;
 	import com.pixelBender.model.AssetProxy;
+	import com.pixelBender.model.GameComponentProxy;
 	import com.pixelBender.model.vo.asset.AssetPackageVO;
 	import com.pixelBender.model.vo.asset.AssetVO;
 	
@@ -37,25 +37,26 @@ package com.pixelBender.controller.asset
 				assetPackageVO:AssetPackageVO, // Root package
 				children:XMLList = packageXML.children(),
 				assetProxy:AssetProxy = facade.retrieveProxy(GameConstants.ASSET_PROXY_NAME) as AssetProxy,
+				gameComponentProxy:GameComponentProxy = facade.retrieveProxy(GameConstants.GAME_COMPONENT_PROXY_NAME) as GameComponentProxy,
 				child:XML; 
 			// Check data
-			AssertHelpers.assertCondition((packageName.length>0), "Asset package has no name!");
+			AssertHelpers.assertCondition((packageName.length > 0), "Asset package has no name!");
 			// Default package type
-			if (packageType.length == 0) {
+			if (packageType.length == 0)
+			{
 				packageType = GameConstants.ASSET_PACKAGE_TYPE_GENERIC;
 			}
 			assetPackageVO = new AssetPackageVO(packageName, packageType);
 			// Parse children
-			for each ( child in children )
+			for each (child in children)
 			{
 				switch (String(child.name()))
 				{
 					case GameConstants.ASSET_PACKAGE_XML_NAME:
-						sendNotification(GameConstants.PARSE_AND_REGISTER_ASSET_PACKAGE,
-											new ParseAndRegisterAssetPackageCommandVO(child, assetPackageVO));
+						sendNotification(GameConstants.PARSE_AND_REGISTER_ASSET_PACKAGE, new ParseAndRegisterAssetPackageCommandVO(child, assetPackageVO));
 						break;
 					default:
-						createAsset(child, assetPackageVO);
+						createAsset(child, assetPackageVO, gameComponentProxy);
 						break;
 				}
 			}
@@ -87,11 +88,11 @@ package com.pixelBender.controller.asset
 		/**
 		 * Will initialize the AssetVO using the reflection dictionary
 		 */
-		private static function createAsset(assetXML:XML, parentPackage:AssetPackageVO):void
+		private static function createAsset(assetXML:XML, parentPackage:AssetPackageVO, gameComponentProxy:GameComponentProxy):void
 		{
 			// Internals
 			var assetType:String = String(assetXML.name()),
-				className:String = GameReflections.getAssetQualifiedClassName(assetType),
+				className:String = gameComponentProxy.getAssetQualifiedClassName(assetType),
 				assetClass:Class = ApplicationDomain.currentDomain.getDefinition(className) as Class,
 				assetVO:AssetVO = new assetClass(String(assetXML.@name), String(assetXML.@url));
 			// Add asset to parent package

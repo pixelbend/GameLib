@@ -170,7 +170,7 @@ package com.pixelBender.facade
 			var logicXML:LogicXML = new LogicXML();
 			var embeddedXML:XML = logicXML.getXML();
 			// Default transition sequence
-			transitionSequenceName = ( transitionSequenceName == null ) ? GameConstants.DEFAULT_TRANSITION_SEQUENCE_NAME : transitionSequenceName;
+			transitionSequenceName = (transitionSequenceName == null) ? GameConstants.DEFAULT_TRANSITION_SEQUENCE_NAME : transitionSequenceName;
 			// Keep reference to params
 			this.gameRoot = root;
 			this.starlingGameRoot = starlingRoot;

@@ -1,7 +1,6 @@
 package com.pixelBender.model.component.loader
 {
-	import com.pixelBender.constants.GameConstants;
-	import com.pixelBender.constants.GameReflections;
+	import com.pixelBender.helpers.AssertHelpers;
 	import com.pixelBender.helpers.IRunnableHelpers;
 	import com.pixelBender.pool.ObjectPool;
 	import com.pixelBender.interfaces.IAssetLoader;
@@ -50,6 +49,11 @@ package com.pixelBender.model.component.loader
 		 * The callback invoked when the entire queue is complete 
 		 */		
 		protected var queueCompleteCallback														:Function;
+
+		/**
+		 * Reference to all the asset loader object pools
+		 */
+		protected var loaderPools																:Dictionary;
 		
 		//==============================================================================================================
 		// CONSTRUCTOR
@@ -60,7 +64,6 @@ package com.pixelBender.model.component.loader
 		 */		
 		public function AssetLoaderComponent()
 		{
-			createLoadersDictionary();
 			maxParallelLoaders = DEFAULT_QUEUE_LENGTH;
 		}
 		
@@ -84,12 +87,19 @@ package com.pixelBender.model.component.loader
 			totalQueue = null;
 			assetLoadedCallback = null;
 			queueCompleteCallback = null;
+			loaderPools = null;
 		}
 		
 		//==============================================================================================================
 		// API
 		//==============================================================================================================
-		
+
+		/**
+		 * Starts the loading procedure
+		 * @param queue
+		 * @param assetLoadedCallback
+		 * @param queueCompleteCallback
+		 */
 		public function load(queue:Vector.<AssetVO>, assetLoadedCallback:Function, queueCompleteCallback:Function):void
 		{
 			// Internals
@@ -106,6 +116,26 @@ package com.pixelBender.model.component.loader
 			}
 			// Start actual loading
 			loadNextAssets();
+		}
+
+		/**
+		 * Creates the asset loader object pools. Must only be called once at initialization.
+		 * @param knownLoaderTypes
+		 */
+		public function createLoaderPools(knownLoaderTypes:Dictionary):void
+		{
+			AssertHelpers.assertCondition(loaderPools == null, "Loader pools already initialized!");
+
+			const poolManager:ObjectPoolManager = ObjectPoolManager.getInstance();
+			var loaderClass:Class,
+				key:String;
+
+			loaderPools = new Dictionary();
+			for (key in knownLoaderTypes)
+			{
+				loaderClass = ApplicationDomain.currentDomain.getDefinition(knownLoaderTypes[key]) as Class;
+				loaderPools[key] = poolManager.registerPool(key, loaderClass);
+			}
 		}
 
 		//==============================================================================================================
@@ -173,23 +203,6 @@ package com.pixelBender.model.component.loader
 			totalQueue = null;
 			currentLoaders = null;
 			queueCompleteCallback();
-		}
-		
-		/**
-		 * Will create the loader object pools. 
-		 */		
-		protected static function createLoadersDictionary():void
-		{
-			// Internals
-			var knownLoaderTypes:Dictionary = GameReflections.getAllReflectionsByType(GameConstants.REFLECTION_TYPE_LOADER),
-				loaderClass:Class,
-				key:String;
-			// Create instance and populate with all loader known types.
-			for (key in knownLoaderTypes)
-			{
-				loaderClass = ApplicationDomain.currentDomain.getDefinition(knownLoaderTypes[key]) as Class;
-				ObjectPoolManager.getInstance().registerPool(key, loaderClass);
-			}
 		}
 	}
 }

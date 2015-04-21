@@ -133,9 +133,9 @@ package com.pixelBender.constants
 		// REFLECTIONS
 		//=================================================================================================================================
 		
-		public static const REFLECTION_TYPE_GAME_COMPONENT						:String = "gameComponent";
-		public static const REFLECTION_TYPE_ASSET								:String = "asset";
-		public static const REFLECTION_TYPE_LOADER								:String = "assetLoader";
+		public static const COMPONENT_TYPE_GAME_COMPONENT						:String = "gameComponent";
+		public static const COMPONENT_TYPE_ASSET								:String = "asset";
+		public static const COMPONENT_TYPE_LOADER								:String = "assetLoader";
 		
 		//=================================================================================================================================
 		// ASSET PACKAGE CONSTANTS

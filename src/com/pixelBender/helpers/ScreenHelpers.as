@@ -2,10 +2,7 @@ package com.pixelBender.helpers
 {
 	import com.pixelBender.constants.GameConstants;
 	import com.pixelBender.controller.gameScreen.vo.ShowGameScreenCommandVO;
-	import com.pixelBender.log.Logger;
-	import com.pixelBender.model.GameScreenProxy;
 	import com.pixelBender.pool.ObjectPool;
-	import com.pixelBender.view.gameScreen.GameScreenMediator;
 
 	public class ScreenHelpers extends GameHelpers
 	{
@@ -26,12 +23,5 @@ package com.pixelBender.helpers
 			facade.sendNotification(GameConstants.SHOW_GAME_SCREEN, noteVO);
 			pool.release(noteVO);
 		}
-
-		public static function unregisterDefaultPackageSounds(gameScreen:GameScreenMediator):void
-		{
-
-		}
-
-
 	}
 }
