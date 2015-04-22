@@ -1,5 +1,6 @@
 package com.pixelBender.model.component.loader
 {
+	import com.pixelBender.constants.GameConstants;
 	import com.pixelBender.helpers.AssertHelpers;
 	import com.pixelBender.helpers.IRunnableHelpers;
 	import com.pixelBender.pool.ObjectPool;
@@ -13,13 +14,6 @@ package com.pixelBender.model.component.loader
 	
 	public class AssetLoaderComponent implements IPauseResume
 	{
-		
-		//==============================================================================================================
-		// CONSTANTS
-		//==============================================================================================================
-		
-		private static const DEFAULT_QUEUE_LENGTH												:int = 10;
-		
 		//==============================================================================================================
 		// MEMBERS
 		//==============================================================================================================
@@ -54,19 +48,7 @@ package com.pixelBender.model.component.loader
 		 * Reference to all the asset loader object pools
 		 */
 		protected var loaderPools																:Dictionary;
-		
-		//==============================================================================================================
-		// CONSTRUCTOR
-		//==============================================================================================================
-		
-		/**
-		 * Constructor 
-		 */		
-		public function AssetLoaderComponent()
-		{
-			maxParallelLoaders = DEFAULT_QUEUE_LENGTH;
-		}
-		
+
 		//==============================================================================================================
 		// IPauseResume IMPLEMENTATION
 		//==============================================================================================================
@@ -99,11 +81,16 @@ package com.pixelBender.model.component.loader
 		 * @param queue
 		 * @param assetLoadedCallback
 		 * @param queueCompleteCallback
+		 * @param concurrentLoaders uint
 		 */
-		public function load(queue:Vector.<AssetVO>, assetLoadedCallback:Function, queueCompleteCallback:Function):void
+		public function load(queue:Vector.<AssetVO>, assetLoadedCallback:Function, queueCompleteCallback:Function,
+							 	concurrentLoaders:uint = GameConstants.DEFAULT_CONCURRENT_LOADERS):void
 		{
 			// Internals
 			var asset:AssetVO;
+			// Assign max connections
+			AssertHelpers.assertCondition(concurrentLoaders > 0, "Concurrent loaders must be greater then zero!");
+			maxParallelLoaders = concurrentLoaders;
 			// Reset all queues
 			currentLoaders = new <IAssetLoader>[];
 			totalQueue = new <AssetVO>[];
@@ -164,7 +151,7 @@ package com.pixelBender.model.component.loader
 			while (currentLoaders.length < maxParallelLoaders && totalQueue.length > 0)
 			{
 				assetToLoad = totalQueue.pop();
-				loaderPool = ObjectPoolManager.getInstance().retrievePool(assetToLoad.getType());
+				loaderPool = loaderPools[assetToLoad.getType()];
 				loader = loaderPool.allocate() as IAssetLoader;
 				currentLoaders.push(loader);
 				loader.load(assetToLoad, handleAssetLoaded);
@@ -179,7 +166,7 @@ package com.pixelBender.model.component.loader
 		{
 			// Internals
 			var loadedAsset:AssetVO = loader.getAsset(),
-				loaderPool:ObjectPool = ObjectPoolManager.getInstance().retrievePool(loadedAsset.getType()),
+				loaderPool:ObjectPool = loaderPools[loadedAsset.getType()],
 				index:int = currentLoaders.indexOf(loader);
 			// Release the loader back in the pool
 			currentLoaders.splice(index,1);

@@ -2,7 +2,8 @@ package com.pixelBender.controller.asset
 {
 	import com.pixelBender.constants.GameConstants;
 	import com.pixelBender.model.AssetProxy;
-	
+	import com.pixelBender.model.component.loader.AssetLoaderComponent;
+
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
@@ -19,9 +20,10 @@ package com.pixelBender.controller.asset
 		override public function execute(notification:INotification):void
 		{
 			// Internals
-			var assetProxy:AssetProxy = facade.retrieveProxy(GameConstants.ASSET_PROXY_NAME) as AssetProxy;
+			var assetProxy:AssetProxy = facade.retrieveProxy(GameConstants.ASSET_PROXY_NAME) as AssetProxy,
+				concurrentLoadersCount:uint = notification.getBody() ? int(notification.getBody()) : GameConstants.DEFAULT_CONCURRENT_LOADERS;
 			// Add package to queue
-			assetProxy.load();
+			assetProxy.load(concurrentLoadersCount);
 		}
 	}
 }

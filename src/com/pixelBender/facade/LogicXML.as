@@ -16,9 +16,11 @@ package com.pixelBender.facade
 							<component type="gameComponent" 	name="_game__gameScreenManagerMediator"			className="com.pixelBender.view.gameScreen.GameScreenManagerMediator" />
 							<component type="gameComponent" 	name="_game__popupManagerMediator"				className="com.pixelBender.view.popup.PopupManagerMediator" />
 							<component type="asset" 			name="swf" 										className="com.pixelBender.model.vo.asset.SWFAssetVO" />
+							<component type="asset" 			name="image"									className="com.pixelBender.model.vo.asset.ImageAssetVO" />
 							<component type="asset"			    name="xml" 										className="com.pixelBender.model.vo.asset.XMLAssetVO" />
 							<component type="asset"			    name="sound" 									className="com.pixelBender.model.vo.asset.SoundAssetVO" />
 							<component type="assetLoader"		name="swf" 										className="com.pixelBender.model.component.loader.SWFLoader" />
+							<component type="assetLoader"		name="image" 									className="com.pixelBender.model.component.loader.ImageLoader" />
 							<component type="assetLoader"		name="xml" 										className="com.pixelBender.model.component.loader.XMLLoader" />
 							<component type="assetLoader"		name="sound" 									className="com.pixelBender.model.component.loader.SoundLoader" />
 						</components>

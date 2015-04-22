@@ -287,6 +287,22 @@ package com.pixelBender.model.vo.asset
 			}
 			return null;
 		}
+
+		/**
+		 * Type cast wrapper over get asset. Will only retrieve the asset if it is a ImageAssetVO
+		 * @param name String
+		 * @param searchSubPackages Boolean
+		 * @return ImageAssetVO
+		 */
+		public function getImageAsset(name:String, searchSubPackages:Boolean=true):ImageAssetVO
+		{
+			var searchedAsset:AssetVO = getAsset(name, searchSubPackages);
+			if (searchedAsset != null && searchedAsset is ImageAssetVO)
+			{
+				return searchedAsset as ImageAssetVO;
+			}
+			return null;
+		}
 		
 		/**
 		 * Type cast wrapper over get asset. Will only retrieve the asset if it is a XMLAssetVO

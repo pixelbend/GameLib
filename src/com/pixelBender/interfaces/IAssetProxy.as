@@ -15,6 +15,6 @@ package com.pixelBender.interfaces
 		function setGenericPath(path:String):void;
 		function setLocalePath(path:String):void;
 		function addPackageToLoadQueue(name:String, includeSubPackages:Boolean=true):void;
-		function load():void;
+		function load(concurrentLoadersCount:uint):void;
 	}
 }

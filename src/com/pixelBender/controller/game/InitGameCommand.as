@@ -6,12 +6,14 @@ package com.pixelBender.controller.game
 	import com.pixelBender.controller.game.vo.InitGameCommandVO;
 	import com.pixelBender.helpers.AssertHelpers;
 	import com.pixelBender.helpers.ScreenHelpers;
+	import com.pixelBender.interfaces.IAssetLoader;
 	import com.pixelBender.log.Logger;
 	import com.pixelBender.model.AssetProxy;
 	import com.pixelBender.model.GameComponentProxy;
 	import com.pixelBender.model.LocalizationProxy;
 	import com.pixelBender.model.vo.InitTransitionVO;
 	import com.pixelBender.model.vo.ScreenTransitionSequenceVO;
+	import com.pixelBender.model.vo.asset.AssetVO;
 	import com.pixelBender.view.gameScreen.GameScreenManagerMediator;
 	import com.pixelBender.view.gameScreen.GameScreenMediator;
 	import com.pixelBender.view.popup.PopupManagerMediator;
@@ -43,6 +45,7 @@ package com.pixelBender.controller.game
 	 *      - transition views
 	 * 		- transition sequences
 	 * 		- popups
+	 * 		- default + custom asset VOs and loaders
 	 * This command was kept so bulky, just so that there will be a single point of entry (and possible failure) on game initialization.
 	 * Everything is cross checked here.
 	 */	
@@ -84,14 +87,11 @@ package com.pixelBender.controller.game
 			GameComponent.setQualifiedClassNameDictionary(getGameComponentQualifiedNameDictionary());
 			populateComponents(defaultGameLogicXML, components);
 			// Parse specific components
-			if (specificGameLogic != null )
+			list = specificGameLogic.gameComponents.gameComponent;
+			for each (node in list)
 			{
-				list = specificGameLogic.gameComponents.gameComponent;
-				for each (node in list)
-				{
-					gameComponent = new GameComponent(String(node.@name), String(node.@type), String(node.@className), gameRoot);
-					gameComponentsDictionary[gameComponent.getName()] = gameComponent.validateAndCreate(facade);
-				}
+				gameComponent = new GameComponent(String(node.@name), String(node.@type), String(node.@className), gameRoot);
+				gameComponentsDictionary[gameComponent.getName()] = gameComponent.validateAndCreate(facade);
 			}
 			// Parse default components
 			list = defaultGameLogicXML.gameComponents.gameComponent;
@@ -105,6 +105,43 @@ package com.pixelBender.controller.game
 					gameComponentsDictionary[gameComponentName] = gameComponent.create(facade);
 				}
 			}
+			// Set custom asset loader / VO pairs if need be
+			list = specificGameLogic.customAssetLoaderVOPairs.customAssetLoaderVOPair;
+			for each (node in list)
+			{
+				var name:String = String(node.@name),
+					loaderClassName:String = String(node.@loaderClassName),
+					classInstance:Class;
+
+				try
+				{
+					classInstance = ApplicationDomain.currentDomain.getDefinition(loaderClassName) as Class;
+				}
+				catch (error:Error)
+				{
+					AssertHelpers.assertCondition(false, "Custom loader class [" + loaderClassName + "] is unknown");
+				}
+
+				var loader:IAssetLoader = new classInstance() as IAssetLoader;
+				AssertHelpers.assertCondition(loader != null, "Custom loader instance for [" + name + "] must be a valid IAssetLoader");
+				var assetVOClassName:String = String(node.@voClassName);
+
+				try
+				{
+					classInstance = ApplicationDomain.currentDomain.getDefinition(assetVOClassName) as Class;
+				}
+				catch (error:Error)
+				{
+					AssertHelpers.assertCondition(false, "Custom asset vo class [" + assetVOClassName + "] is unknown");
+				}
+
+				var vo:AssetVO = new classInstance("", "") as AssetVO;
+				AssertHelpers.assertCondition(vo != null, "Custom asset vo instance for [" + name + "] must be a valid AssetVO");
+
+				components.addComponent(GameConstants.COMPONENT_TYPE_LOADER, name, loaderClassName);
+				components.addComponent(GameConstants.COMPONENT_TYPE_ASSET, name, assetVOClassName);
+			}
+			// Set known loaders
 			AssetProxy(gameComponentsDictionary[GameConstants.ASSET_PROXY_NAME]).setKnownLoaders(components.getAllComponentsByType(GameConstants.COMPONENT_TYPE_LOADER));
 			assignGameLocale(gameComponentsDictionary, initVO.getLocale());
 			// Set component dictionary

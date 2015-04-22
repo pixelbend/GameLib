@@ -25,6 +25,8 @@ package com.pixelBender.constants
 		public static const LOAD_ASSET_QUEUE									:String = "_game__loadQueue";
 		public static const RETRIEVE_GLOBAL_ASSET_PACKAGE						:String = "_game_retrieveGlobalAssetPackage";
 
+		public static const DEFAULT_CONCURRENT_LOADERS								:int = 10;
+
 		//=================================================================================================================================
 		// ASSET FILE REFERENCE NOTIFICATION NAMES
 		//=================================================================================================================================
@@ -152,6 +154,7 @@ package com.pixelBender.constants
 		//=================================================================================================================================
 		
 		public static const ASSET_TYPE_SWF										:String = "swf";
+		public static const ASSET_TYPE_IMAGE									:String = "image";
 		public static const ASSET_TYPE_SOUND									:String = "sound";
 		public static const ASSET_TYPE_XML										:String = "xml";
 

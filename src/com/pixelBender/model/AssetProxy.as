@@ -238,15 +238,16 @@ package com.pixelBender.model
 		}
 		
 		/**
-		 * Will begin the load procedure. 
+		 * Will begin the load procedure.
+		 * @param concurrentLoadersCount uint - the maximum concurrent loaders that are active at any given time
 		 */		
-		public function load():void
+		public function load(concurrentLoadersCount:uint):void
 		{
 			// Verify state
 			AssertHelpers.assertCondition(!BitMaskHelpers.isBitActive(state, GameConstants.STATE_LOADING),
 											"Cannot call load() while loading!");
 			// Check loading queue
-			if (loadingQueue.length == 0 ) 
+			if (loadingQueue.length == 0)
 			{
 				Logger.warning(this + " Loading queue is empty. Dispatching complete!");
 				facade.sendNotification(GameConstants.ASSET_QUEUE_LOADED);
@@ -256,7 +257,7 @@ package com.pixelBender.model
 			state = BitMaskHelpers.switchMaskState(state, GameConstants.STATE_IDLE, GameConstants.STATE_LOADING);
 			// Start load
 			initialLoadQueueCount = loadingQueue.length;
-			loaderComponent.load(loadingQueue, handleAssetLoaded, handleQueueComplete);
+			loaderComponent.load(loadingQueue, handleAssetLoaded, handleQueueComplete, concurrentLoadersCount);
 		}
 		
 		//==============================================================================================================

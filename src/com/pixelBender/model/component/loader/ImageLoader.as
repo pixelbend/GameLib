@@ -1,62 +1,61 @@
 package com.pixelBender.model.component.loader
 {
 	import com.pixelBender.model.vo.asset.AssetVO;
-	import com.pixelBender.model.vo.asset.SWFAssetVO;
+	import com.pixelBender.model.vo.asset.ImageAssetVO;
 
 	import flash.events.Event;
 
-	public class SWFLoader extends GraphicsLoader
+	public class ImageLoader extends GraphicsLoader
 	{
-		
 		//==============================================================================================================
 		// MEMBERS
 		//==============================================================================================================
-		
+
 		/**
-		 * Reference to the SWF asset 
-		 */		
-		protected var swfAsset																		:SWFAssetVO;
+		 * Reference to the SWF asset
+		 */
+		protected var imageAsset														:ImageAssetVO;
 
 		//==============================================================================================================
 		// PUBLIC OVERRIDES
 		//==============================================================================================================
 
 		/**
-		 * See inherited documentation 
-		 * @param asset SWFAssetVO
+		 * See inherited documentation
+		 * @param asset ImageAssetVO
 		 * @param callback Function
-		 */	
+		 */
 		override public function load(asset:AssetVO, callback:Function):void
 		{
 			super.load(asset, callback);
-			swfAsset = asset as SWFAssetVO;
+			imageAsset = asset as ImageAssetVO;
 		}
-		
+
 		/**
 		 * See inherited documentation
-		 * @return AssetVO 
-		 */		
+		 * @return AssetVO
+		 */
 		override public function getAsset():AssetVO
 		{
-			return swfAsset;
+			return imageAsset;
 		}
-		
+
 		/**
-		 * See inherited documentation 
-		 */		
+		 * See inherited documentation
+		 */
 		override public function clear():void
 		{
 			super.clear();
-			swfAsset = null;
+			imageAsset = null;
 		}
-		
+
 		/**
-		 * See inherited documentation 
-		 */	
+		 * See inherited documentation
+		 */
 		override public function dispose():void
 		{
 			super.dispose();
-			swfAsset = null;
+			imageAsset = null;
 		}
 
 		//==============================================================================================================
@@ -69,9 +68,7 @@ package com.pixelBender.model.component.loader
 		 */
 		override protected function handleCompleteEvent(event:Event):void
 		{
-			swfAsset.setContent(loader.content);
-			swfAsset.setApplicationDomain(loader.contentLoaderInfo.applicationDomain);
-			swfAsset.setBytes(loader.contentLoaderInfo.bytes);
+			imageAsset.setContent(loader.content);
 			super.handleCompleteEvent(event);
 		}
 	}

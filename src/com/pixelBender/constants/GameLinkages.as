@@ -5,9 +5,11 @@ package com.pixelBender.constants
 	import com.pixelBender.model.LocalizationProxy;
 	import com.pixelBender.model.SoundProxy;
 	import com.pixelBender.model.TweenProxy;
+	import com.pixelBender.model.component.loader.ImageLoader;
 	import com.pixelBender.model.component.loader.SWFLoader;
 	import com.pixelBender.model.component.loader.SoundLoader;
 	import com.pixelBender.model.component.loader.XMLLoader;
+	import com.pixelBender.model.vo.asset.ImageAssetVO;
 	import com.pixelBender.model.vo.asset.SWFAssetVO;
 	import com.pixelBender.model.vo.asset.SoundAssetVO;
 	import com.pixelBender.model.vo.asset.XMLAssetVO;
@@ -27,10 +29,12 @@ package com.pixelBender.constants
 		GameScreenManagerMediator;
 		// Assets
 		SWFAssetVO;
+		ImageAssetVO;
 		SoundAssetVO;
 		XMLAssetVO;
 		// Asset loaders
 		SWFLoader;
+		ImageLoader;
 		XMLLoader;
 		SoundLoader;
 		// Transitions
