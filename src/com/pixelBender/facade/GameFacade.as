@@ -207,6 +207,7 @@ package com.pixelBender.facade
 			if (gameSize != null)
 			{
 				gameSize.update(width, height, scale);
+				sendNotification(GameConstants.GAME_SIZE_UPDATED, gameSize);
 			}
 		}
 

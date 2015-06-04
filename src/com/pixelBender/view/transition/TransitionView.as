@@ -1,8 +1,6 @@
 package com.pixelBender.view.transition
 {
 	import com.pixelBender.constants.GameConstants;
-	import com.pixelBender.helpers.AssertHelpers;
-	import com.pixelBender.helpers.BitMaskHelpers;
 	import com.pixelBender.helpers.BitMaskHelpers;
 	import com.pixelBender.helpers.MovieClipHelpers;
 	import com.pixelBender.helpers.StarlingHelpers;

@@ -32,6 +32,13 @@ package com.pixelBender.view.popup
 	public class PopupManagerMediator extends Mediator implements IPauseResume
 	{
 		//==============================================================================================================
+		// CONSTANTS
+		//==============================================================================================================
+
+		protected static const TRANSLUCENT_SOURCE_IMAGE_SIZE				:int = 128;
+		protected static const TRANSLUCENT_SOURCE_IMAGE_INVERTED_SIZE		:Number = 1 / TRANSLUCENT_SOURCE_IMAGE_SIZE;
+
+		//==============================================================================================================
 		// MEMBERS
 		//==============================================================================================================
 		
@@ -138,7 +145,8 @@ package com.pixelBender.view.popup
 						GameConstants.GET_POPUP_TRANSLUCENT_LAYER_PROPERTIES,
 						GameConstants.SET_POPUP_TRANSLUCENT_LAYER_ENABLED,
 						GameConstants.SET_POPUP_TRANSLUCENT_LAYER_ALPHA,
-						GameConstants.SET_POPUP_TRANSLUCENT_LAYER_COLOR
+						GameConstants.SET_POPUP_TRANSLUCENT_LAYER_COLOR,
+						GameConstants.GAME_SIZE_UPDATED
 					];
 		}
 		
@@ -169,6 +177,9 @@ package com.pixelBender.view.popup
 					break;
 				case GameConstants.SET_POPUP_TRANSLUCENT_LAYER_COLOR:
 					handleSetTranslucentLayerColor(notification.getBody() as int);
+					break;
+				case GameConstants.GAME_SIZE_UPDATED:
+					handleGameSizeUpdated(notification.getBody() as GameSizeVO);
 					break;
 			}
 		}
@@ -366,6 +377,28 @@ package com.pixelBender.view.popup
 			}
 		}
 
+		/**
+		 * Updates the translucent layer size
+		 * @param gameSize GameSizeVO
+		 */
+		protected function handleGameSizeUpdated(gameSize:GameSizeVO):void
+		{
+			var scaleX:Number = gameSize.getWidth() * TRANSLUCENT_SOURCE_IMAGE_INVERTED_SIZE,
+				scaleY:Number = gameSize.getHeight() * TRANSLUCENT_SOURCE_IMAGE_INVERTED_SIZE;
+
+			if (translucentLayerView != null)
+			{
+				translucentLayerView.scaleX = scaleX;
+				translucentLayerView.scaleY = scaleY;
+			}
+
+			if (starlingTranslucentLayerView != null)
+			{
+				starlingTranslucentLayerView.scaleX = scaleX;
+				starlingTranslucentLayerView.scaleY = scaleY;
+			}
+		}
+
 		//==============================================================================================================
 		// LOCALS
 		//==============================================================================================================
@@ -376,11 +409,11 @@ package com.pixelBender.view.popup
 		protected function createInitialTranslucentLayer():void
 		{
 			var gameSize:GameSizeVO = GameFacade(facade).getApplicationSize(),
-				bitmapData:BitmapData = new BitmapData(100, 100, false, 0xFFFFFF),
+				bitmapData:BitmapData = new BitmapData(TRANSLUCENT_SOURCE_IMAGE_SIZE, TRANSLUCENT_SOURCE_IMAGE_SIZE, false, 0xFFFFFF),
 				width:int = gameSize.getWidth(),
 				height:int = gameSize.getHeight(),
-				scaleX:Number = width/bitmapData.width,
-				scaleY:Number = height/bitmapData.height;
+				scaleX:Number = width * TRANSLUCENT_SOURCE_IMAGE_INVERTED_SIZE,
+				scaleY:Number = height * TRANSLUCENT_SOURCE_IMAGE_INVERTED_SIZE;
 			// Draw normal graphics
 			translucentLayerView = new Bitmap(bitmapData);
 			translucentLayerView.scaleX = scaleX;

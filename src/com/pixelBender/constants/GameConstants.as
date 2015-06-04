@@ -11,6 +11,7 @@ package com.pixelBender.constants
 		public static const PAUSE_GAME											:String = "_game__pauseGame";
 		public static const RESUME_GAME											:String = "_game__resumeGame";
 		public static const DESTROY_GAME										:String = "_game__destroyGame";
+		public static const GAME_SIZE_UPDATED									:String = "_game__gameSizeUpdated";
 		
 		//=================================================================================================================================
 		// ASSET NOTIFICATION NAMES
