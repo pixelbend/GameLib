@@ -129,8 +129,8 @@ package com.pixelBender.model.vo.tween
 
 		public function toString():String
 		{
-			return "[TweenVO target:" + target + " duration: " + duration +
-						" tweenProperties:" + tweenTargetProperties + "]";
+			return "[TweenVO target:" + target + " duration: " + duration + " tweenProperties:"
+						+ tweenTargetProperties + "]";
 		}
 	}
 }

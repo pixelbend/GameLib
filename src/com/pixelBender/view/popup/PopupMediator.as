@@ -56,21 +56,24 @@ package com.pixelBender.view.popup
 
 		public final function openPopup():void
 		{
-			if (!BitMaskHelpers.isBitActive(state, GameConstants.STATE_PREPARING_FOR_OPEN)) return;
+			if (!BitMaskHelpers.isBitActive(state, GameConstants.STATE_PREPARING_FOR_OPEN))
+				return;
 			open();
 			state = GameConstants.STATE_OPENED;
 		}
 
 		public final function pausePopup():void
 		{
-			if (!BitMaskHelpers.isBitActive(state, GameConstants.STATE_OPENED)) return;
+			if (!BitMaskHelpers.isBitActive(state, GameConstants.STATE_OPENED))
+				return;
 			pause();
 			state = BitMaskHelpers.addBit(state, GameConstants.STATE_PAUSED);
 		}
 
 		public final function resumePopup():void
 		{
-			if (!BitMaskHelpers.isBitActive(state, GameConstants.STATE_PAUSED)) return;
+			if (!BitMaskHelpers.isBitActive(state, GameConstants.STATE_PAUSED))
+				return;
 			resume();
 			state = BitMaskHelpers.removeBit(state, GameConstants.STATE_PAUSED);
 		}
@@ -82,7 +85,8 @@ package com.pixelBender.view.popup
 
 		public final function closePopup():void
 		{
-			if (!BitMaskHelpers.isBitActive(state, GameConstants.STATE_OPENED)) return;
+			if (!BitMaskHelpers.isBitActive(state, GameConstants.STATE_OPENED))
+				return;
 			close();
 			state = GameConstants.STATE_CLOSED;
 		}

@@ -53,8 +53,20 @@ package com.pixelBender.facade
 	import com.pixelBender.helpers.TweenHelpers;
 	import com.pixelBender.interfaces.IRunnable;
 	import com.pixelBender.log.Logger;
+	import com.pixelBender.model.component.action.ParallelAction;
+	import com.pixelBender.model.component.action.PlaySoundAction;
+	import com.pixelBender.model.component.action.SequenceAction;
+	import com.pixelBender.model.component.action.TweenAction;
+	import com.pixelBender.model.component.action.WaitAction;
 	import com.pixelBender.model.component.loader.FileLoader;
 	import com.pixelBender.model.component.sound.SoundPlayer;
+	import com.pixelBender.model.vo.action.CompleteActionPropertiesVO;
+	import com.pixelBender.model.vo.action.ParallelActionVO;
+	import com.pixelBender.model.vo.action.PlaySoundActionVO;
+	import com.pixelBender.model.vo.action.RunningActionVO;
+	import com.pixelBender.model.vo.action.SequenceActionVO;
+	import com.pixelBender.model.vo.action.TweenActionVO;
+	import com.pixelBender.model.vo.action.WaitActionVO;
 	import com.pixelBender.model.vo.game.GameSizeVO;
 	import com.pixelBender.model.vo.note.tween.AddTweenNotificationVO;
 	import com.pixelBender.model.vo.sound.CompleteQueuePropertiesVO;
@@ -389,8 +401,22 @@ package com.pixelBender.facade
 			// Popup VOs
 			poolManager.registerPool(PopupHelpersResponseVO.NAME, PopupHelpersResponseVO, 1);
 			poolManager.registerPool(OpenPopupVO.NAME, OpenPopupVO, 1);
+			// Action VOs
+			poolManager.registerPool(RunningActionVO.NAME, RunningActionVO);
+			poolManager.registerPool(CompleteActionPropertiesVO.NAME, CompleteActionPropertiesVO);
+			poolManager.registerPool(WaitActionVO.NAME, WaitActionVO, 1);
+			poolManager.registerPool(PlaySoundActionVO.NAME, PlaySoundActionVO, 1);
+			poolManager.registerPool(TweenActionVO.NAME, TweenActionVO, 1);
+			poolManager.registerPool(SequenceActionVO.NAME, SequenceActionVO, 1);
+			poolManager.registerPool(ParallelActionVO.NAME, ParallelActionVO, 1);
+			// Actions
+			poolManager.registerPool(WaitAction.NAME, WaitAction, 1);
+			poolManager.registerPool(PlaySoundAction.NAME, PlaySoundAction, 1);
+			poolManager.registerPool(TweenAction.NAME, TweenAction, 1);
+			poolManager.registerPool(SequenceAction.NAME, SequenceAction, 1);
+			poolManager.registerPool(ParallelAction.NAME, ParallelAction, 1);
 			// File loaders
-			poolManager.registerPool(FileLoader.NAME, FileLoader);
+			poolManager.registerPool(FileLoader.NAME, FileLoader, 1);
 			// Notifications
 			notificationPool = poolManager.registerPool(GameNotification.NAME, GameNotification);
 		}

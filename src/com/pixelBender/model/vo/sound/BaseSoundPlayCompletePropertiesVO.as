@@ -17,12 +17,12 @@ package com.pixelBender.model.vo.sound
 		protected var channelID													:int;
 		
 		/**
-		 * The sound volume. Can take values from 0 to 100. 
+		 * The sound volume. Can take values from 0 to 100
 		 */		
 		protected var volume													:int;
 		
 		/**
-		 * The sound priority. Used to override  
+		 * The sound priority. Used to override other playing sounds on the same channel
 		 */		
 		protected var priority													:int;
 		
@@ -32,7 +32,7 @@ package com.pixelBender.model.vo.sound
 		protected var loops														:int;
 				
 		/**
-		 * The complete callback invoked. 
+		 * The complete callback invoked
 		 * The callback takes 2 parameters:
 		 * 	1 - the PlaySoundPropertiesVO given to start the sound
 		 *  2 - forced:Boolean - if the sound completed simply or it was forced

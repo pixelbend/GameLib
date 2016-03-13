@@ -33,15 +33,39 @@ package com.pixelBender.helpers
 		static public function dictionaryLength(dictionary:Dictionary):int
 		{
 			var length:int = 0;
+
 			if (dictionary == null)
-			{
 				return length;
-			}
+
 			for (var key:String in dictionary)
-			{
 				length++;
-			}
+
 			return length;
+		}
+
+		static public function getDictionaryEmpty(dictionary:Dictionary):Boolean
+		{
+			if (dictionary == null)
+				AssertHelpers.assertCondition(false, "Dictionary cannot be null!");
+
+			for (var key:String in dictionary)
+				// At least one element encountered. Not empty
+				return false;
+
+			return true;
+		}
+
+		static public function clone(dictionary:Dictionary):Dictionary
+		{
+			if (dictionary == null)
+				AssertHelpers.assertCondition(false, "Dictionary cannot be null!");
+
+			var clone:Dictionary = new Dictionary();
+
+			for (var key:String in dictionary)
+				clone[key] = dictionary[key];
+
+			return clone;
 		}
 	}
 }

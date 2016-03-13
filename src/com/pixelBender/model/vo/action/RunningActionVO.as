@@ -1,80 +1,76 @@
-package com.pixelBender.model
+package com.pixelBender.model.vo.action
 {
-	import com.pixelBender.facade.GameFacade;
+	import com.pixelBender.interfaces.IAction;
 	import com.pixelBender.interfaces.IDispose;
 
-	import org.puremvc.as3.patterns.proxy.Proxy;
-
-	public class PopupProxy extends Proxy implements IDispose
+	public class RunningActionVO implements IDispose
 	{
 		//==============================================================================================================
-		// CONSTANTS
+		// STATIC MEMBERS
 		//==============================================================================================================
 
-		public static const SUFFIX										:String = "_popupProxy";
+		public static const NAME										:String = "RunningActionVO";
 
 		//==============================================================================================================
 		// MEMBERS
 		//==============================================================================================================
 
 		/**
-		 * Configuration XML
+		 * The running action pointer
 		 */
-		protected var popupLogicXML										:XML;
+		private var action												:IAction;
 
 		/**
-		 * Reference to the game facade
+		 * The complete callback that should be invoked upon completion
 		 */
-		protected var gameFacade										:GameFacade;
+		private var actionCompleteCallback								:Function;
 
 		//==============================================================================================================
 		// CONSTRUCTOR
 		//==============================================================================================================
 
-		public function PopupProxy(popupName:String)
+		public function RunningActionVO() {}
+
+		//==============================================================================================================
+		// API
+		//==============================================================================================================
+
+		/**
+		 * Initializes the RunningAction VO
+		 * @param action IAction - the running action pointer
+		 * @param actionCompleteCallback Function - the complete callback that should be invoked upon completion
+		 */
+		public function initialize(action:IAction, actionCompleteCallback:Function):void
 		{
-			super(popupName + SUFFIX);
+			this.action = action;
+			this.actionCompleteCallback = actionCompleteCallback;
 		}
 
 		//==============================================================================================================
 		// API
 		//==============================================================================================================
 
-		public function setLogicXML(xml:XML):void
-		{
-			popupLogicXML = xml;
-			parseLogicXML();
-		}
-
-		//==============================================================================================================
-		// IDispose IMPLEMENTATION
-		//==============================================================================================================
-
+		/**
+		 * Proper memory management
+		 */
 		public function dispose():void
 		{
-			popupLogicXML = null;
-			gameFacade = null;
+			this.action = null;
+			this.actionCompleteCallback = null;
 		}
 
 		//==============================================================================================================
-		// IProxy OVERRIDES
+		// GETTERS
 		//==============================================================================================================
 
-		public override function onRegister():void
+		public function getAction():IAction
 		{
-			gameFacade = facade as GameFacade;
+			return action;
 		}
 
-		//==============================================================================================================
-		// LOCALS
-		//==============================================================================================================
-
-		/**
-		 * Parses the logic XML in order to obtain popup configuration
-		 */
-		protected function parseLogicXML():void
+		public function getActionCompleteCallback():Function
 		{
-			// Override in concrete implementation
+			return actionCompleteCallback;
 		}
 	}
 }

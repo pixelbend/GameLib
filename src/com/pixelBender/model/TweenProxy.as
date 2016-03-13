@@ -4,8 +4,6 @@ package com.pixelBender.model
 	import com.pixelBender.helpers.AssertHelpers;
 	import com.pixelBender.helpers.BitMaskHelpers;
 	import com.pixelBender.helpers.DictionaryHelpers;
-	import com.pixelBender.helpers.DictionaryHelpers;
-	import com.pixelBender.helpers.IRunnableHelpers;
 	import com.pixelBender.interfaces.IFrameUpdate;
 	import com.pixelBender.interfaces.IPauseResume;
 	import com.pixelBender.model.vo.tween.TweenTargetPropertyVO;
@@ -458,7 +456,7 @@ package com.pixelBender.model
 			tweenVO.dispose();
 			tweenVOPool.release(tweenVO);
 			// Check any tweens left
-			if (DictionaryHelpers.dictionaryLength(activeTweens) == 0)
+			if (DictionaryHelpers.getDictionaryEmpty(activeTweens))
 			{
 				state = BitMaskHelpers.switchMaskState(state, GameConstants.STATE_STARTED, GameConstants.STATE_IDLE);
 				updateManager.unregisterFromUpdate(this);

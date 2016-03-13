@@ -207,7 +207,8 @@ package com.pixelBender.constants
 		public static const STATE_STARTED										:int = 1<<3;
 		public static const STATE_OPENED										:int = 1<<3;
 		public static const STATE_PAUSED										:int = 1<<4;
-		public static const STATE_DISPOSED										:int = 1<<5;
+		public static const STATE_DISPOSING										:int = 1<<5;
+		public static const STATE_DISPOSED										:int = 1<<6;
 
 		//=================================================================================================================================
 		// TRANSITION STATES
@@ -243,5 +244,15 @@ package com.pixelBender.constants
 		
 		public static const BOOLEAN_TRUE_STRING									:String = "true";
 		public static const BOOLEAN_FALSE_STRING								:String = "false";
+
+		//=================================================================================================================================
+		// ACTION TYPES
+		//=================================================================================================================================
+
+		public static const ACTION_TYPE_WAIT									:int = 0;
+		public static const ACTION_TYPE_PLAY_SOUND								:int = 1;
+		public static const ACTION_TYPE_TWEEN									:int = 2;
+		public static const ACTION_TYPE_SEQUENTIAL								:int = 3;
+		public static const ACTION_TYPE_PARALLEL								:int = 4;
 	}
 }
